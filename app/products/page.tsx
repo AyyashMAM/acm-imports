@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import { getActiveProducts } from "@/lib/products";
 import { ProductCard } from "@/components/product-card";
+
+export const metadata: Metadata = {
+  title: "Shop all products",
+  description: "Browse our full range of quality imported goods. Cash on delivery available.",
+  alternates: { canonical: "/products" },
+};
 
 export default async function ProductsPage() {
   const products = await getActiveProducts();

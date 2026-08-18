@@ -1,7 +1,36 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getProductById } from "@/lib/products";
 import { AddToCart } from "@/components/add-to-cart";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const product = await getProductById(id);
+  if (!product) return {};
+
+  const image = [...product.product_images].sort(
+    (a, b) => a.sort_order - b.sort_order
+  )[0];
+  const description =
+    product.description ?? `Buy ${product.name} online. Cash on delivery available.`;
+
+  return {
+    title: product.name,
+    description,
+    alternates: { canonical: `/products/${product.id}` },
+    openGraph: {
+      title: product.name,
+      description,
+      type: "website",
+      images: image ? [{ url: image.url, alt: product.name }] : undefined,
+    },
+  };
+}
 
 export default async function ProductDetailPage({
   params,
@@ -16,8 +45,29 @@ export default async function ProductDetailPage({
     (a, b) => a.sort_order - b.sort_order
   );
 
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description ?? undefined,
+    category: product.category ?? undefined,
+    image: images.map((img) => img.url),
+    offers: {
+      "@type": "Offer",
+      price: product.base_price,
+      priceCurrency: "USD",
+      availability: product.product_variants.some((v) => v.stock_quantity > 0)
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+    },
+  };
+
   return (
     <div className="mx-auto grid max-w-5xl gap-10 px-6 py-12 sm:grid-cols-2">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
       <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-zinc-100">
         {images[0] ? (
           <Image

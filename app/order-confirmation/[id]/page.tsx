@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { ClearCartOnMount } from "@/components/clear-cart-on-mount";
+
+export const metadata: Metadata = {
+  title: "Order confirmation",
+  robots: { index: false, follow: false },
+};
 
 export default async function OrderConfirmationPage({
   params,
