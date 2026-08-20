@@ -36,13 +36,14 @@ export default async function Home() {
             Now shipping nationwide
           </span>
           <h1 className="text-5xl font-extrabold tracking-tight text-zinc-900 sm:text-6xl">
-            Quality imports,
+            Glow-worthy cosmetics,
             <br />
             <span className="text-brand">delivered to your door</span>
           </h1>
           <p className="max-w-xl text-lg text-zinc-600">
-            Handpicked imported goods at honest prices. Order online and pay
-            cash on delivery — no hassle, no surprises.
+            Handpicked imported cosmetics, chocolates, and fancy finds at
+            honest prices. Order online and pay cash on delivery — no
+            hassle, no surprises.
           </p>
           <div className="mt-2 flex flex-wrap items-center justify-center gap-4">
             <Link

@@ -11,6 +11,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
+  const categories = Array.from(
+    new Set(products.map((p) => p.category).filter((c): c is string => Boolean(c)))
+  );
+  const categoryEntries: MetadataRoute.Sitemap = categories.map((category) => ({
+    url: new URL(`/products?category=${encodeURIComponent(category)}`, SITE_URL).toString(),
+    changeFrequency: "daily",
+    priority: 0.8,
+  }));
+
   return [
     {
       url: SITE_URL.toString(),
@@ -22,6 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily",
       priority: 0.9,
     },
+    ...categoryEntries,
     ...productEntries,
   ];
 }

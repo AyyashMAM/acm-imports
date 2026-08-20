@@ -19,11 +19,18 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: SITE_URL,
   title: {
-    default: `${SITE_NAME} — Quality imports, delivered to your door`,
+    default: `${SITE_NAME} — Glow-worthy cosmetics, delivered to your door`,
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
-  keywords: ["imported goods", "online shopping", "cash on delivery", "Sri Lanka"],
+  keywords: [
+    "imported cosmetics",
+    "beauty products online",
+    "imported chocolates",
+    "online shopping",
+    "cash on delivery",
+    "Sri Lanka",
+  ],
   alternates: {
     canonical: "/",
   },
@@ -40,12 +47,12 @@ export const metadata: Metadata = {
     type: "website",
     url: "/",
     siteName: SITE_NAME,
-    title: `${SITE_NAME} — Quality imports, delivered to your door`,
+    title: `${SITE_NAME} — Glow-worthy cosmetics, delivered to your door`,
     description: SITE_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE_NAME} — Quality imports, delivered to your door`,
+    title: `${SITE_NAME} — Glow-worthy cosmetics, delivered to your door`,
     description: SITE_DESCRIPTION,
   },
 };

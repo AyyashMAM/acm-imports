@@ -34,13 +34,13 @@ export default function Image() {
             fontWeight: 700,
           }}
         >
-          AC
+          GS
         </div>
         <div style={{ fontSize: 64, fontWeight: 800, color: "#18181b" }}>
           {SITE_NAME}
         </div>
         <div style={{ fontSize: 28, color: "#52525b" }}>
-          Quality imports, delivered to your door
+          Glow-worthy cosmetics, delivered to your door
         </div>
       </div>
     ),

@@ -10,7 +10,7 @@ import {
 } from "react";
 import type { CartItem } from "@/lib/types";
 
-const STORAGE_KEY = "acm-imports-cart";
+const STORAGE_KEY = "the-glow-shop-cart";
 
 type CartContextValue = {
   items: CartItem[];
