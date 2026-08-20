@@ -40,7 +40,7 @@ export async function placeOrder(
   const variantIds = cart.map((i) => i.variantId);
   const { data: variants, error: variantsError } = await supabaseAdmin
     .from("product_variants")
-    .select("id, label, price, stock_quantity, product_id, products ( name )")
+    .select("id, label, price, cost_price, stock_quantity, product_id, products ( name )")
     .in("id", variantIds);
 
   if (variantsError) {
@@ -55,6 +55,7 @@ export async function placeOrder(
     product_name: string;
     variant_label: string;
     unit_price: number;
+    unit_cost: number | null;
     quantity: number;
     subtotal: number;
   }[] = [];
@@ -77,6 +78,7 @@ export async function placeOrder(
       product_name: variant.products?.name ?? "",
       variant_label: variant.label,
       unit_price: variant.price,
+      unit_cost: variant.cost_price,
       quantity: cartItem.quantity,
       subtotal,
     });
