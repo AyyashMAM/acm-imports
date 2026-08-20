@@ -23,6 +23,7 @@ export default async function AdminDashboardPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Link
           href="/admin/orders?status=pending"
+          prefetch={false}
           className="rounded-2xl border border-black/10 bg-white p-6 hover:shadow-md"
         >
           <p className="text-sm font-semibold text-zinc-500">Pending orders</p>
@@ -32,6 +33,7 @@ export default async function AdminDashboardPage() {
         </Link>
         <Link
           href="/admin/products"
+          prefetch={false}
           className="rounded-2xl border border-black/10 bg-white p-6 hover:shadow-md"
         >
           <p className="text-sm font-semibold text-zinc-500">Active products</p>
@@ -51,6 +53,7 @@ export default async function AdminDashboardPage() {
               <li key={variant.id} className="flex items-center justify-between">
                 <Link
                   href={`/admin/products/${product.id}`}
+                  prefetch={false}
                   className="hover:text-brand"
                 >
                   {product.name} — {variant.label}

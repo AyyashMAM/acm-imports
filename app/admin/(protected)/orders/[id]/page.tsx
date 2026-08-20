@@ -24,6 +24,7 @@ export default async function AdminOrderDetailPage({
         </h1>
         <Link
           href={`/admin/orders/${order.id}/invoice`}
+          prefetch={false}
           className="rounded-full border border-black/15 px-4 py-2 text-sm font-semibold hover:bg-black/[.04]"
         >
           Print invoice

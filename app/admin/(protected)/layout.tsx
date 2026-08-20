@@ -24,7 +24,12 @@ export default async function AdminProtectedLayout({
             </span>
             <nav className="flex items-center gap-5 text-sm font-semibold text-zinc-600">
               {NAV_LINKS.map((link) => (
-                <Link key={link.href} href={link.href} className="hover:text-brand">
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  prefetch={false}
+                  className="hover:text-brand"
+                >
                   {link.label}
                 </Link>
               ))}

@@ -13,6 +13,7 @@ export default async function AdminProductsPage() {
         <h1 className="text-2xl font-extrabold tracking-tight">Products</h1>
         <Link
           href="/admin/products/new"
+          prefetch={false}
           className="rounded-full bg-brand px-5 py-2.5 text-sm font-bold text-white hover:bg-brand-dark"
         >
           + New product
@@ -44,6 +45,7 @@ export default async function AdminProductsPage() {
                   <td className="px-4 py-3">
                     <Link
                       href={`/admin/products/${product.id}`}
+                      prefetch={false}
                       className="font-semibold hover:text-brand"
                     >
                       {product.name}

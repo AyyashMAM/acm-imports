@@ -24,6 +24,7 @@ export default async function AdminReportsPage({
           <Link
             key={r.value}
             href={`/admin/reports?range=${r.value}`}
+            prefetch={false}
             className={`rounded-full px-4 py-1.5 text-sm font-semibold ${
               activeRange === r.value
                 ? "bg-zinc-900 text-white"
@@ -63,6 +64,7 @@ export default async function AdminReportsPage({
                 <td className="px-4 py-3">
                   <Link
                     href={`/admin/orders/${order.id}`}
+                    prefetch={false}
                     className="font-semibold hover:text-brand"
                   >
                     {order.customer_name}

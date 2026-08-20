@@ -31,6 +31,7 @@ export default async function AdminOrdersPage({
       <div className="flex flex-wrap gap-2">
         <Link
           href="/admin/orders"
+          prefetch={false}
           className={`rounded-full px-4 py-1.5 text-sm font-semibold ${
             !activeStatus ? "bg-zinc-900 text-white" : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200"
           }`}
@@ -41,6 +42,7 @@ export default async function AdminOrdersPage({
           <Link
             key={s}
             href={`/admin/orders?status=${s}`}
+            prefetch={false}
             className={`rounded-full px-4 py-1.5 text-sm font-semibold capitalize ${
               activeStatus === s ? "bg-zinc-900 text-white" : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200"
             }`}
@@ -70,6 +72,7 @@ export default async function AdminOrdersPage({
                 <td className="px-4 py-3">
                   <Link
                     href={`/admin/orders/${order.id}`}
+                    prefetch={false}
                     className="font-semibold hover:text-brand"
                   >
                     {order.customer_name}
