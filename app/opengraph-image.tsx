@@ -34,7 +34,7 @@ export default function Image() {
             fontWeight: 700,
           }}
         >
-          GS
+          L
         </div>
         <div style={{ fontSize: 64, fontWeight: 800, color: "#18181b" }}>
           {SITE_NAME}

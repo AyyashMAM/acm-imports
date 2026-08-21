@@ -20,7 +20,7 @@ export default async function AdminProtectedLayout({
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-8">
             <span className="text-lg font-extrabold tracking-tight">
-              The Glow Shop <span className="text-zinc-400">Admin</span>
+              Liora <span className="text-zinc-400">Admin</span>
             </span>
             <nav className="flex items-center gap-5 text-sm font-semibold text-zinc-600">
               {NAV_LINKS.map((link) => (

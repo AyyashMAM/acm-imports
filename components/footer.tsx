@@ -12,7 +12,7 @@ export function Footer() {
     <footer className="border-t border-black/10">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-6 py-10 text-center sm:flex-row sm:justify-between sm:text-left">
         <div>
-          <p className="text-lg font-extrabold tracking-tight">The Glow Shop</p>
+          <p className="text-lg font-extrabold tracking-tight">Liora</p>
           <p className="mt-1 text-sm text-zinc-500">
             Imported cosmetics, chocolates &amp; fancy finds, delivered to your door.
           </p>
@@ -30,7 +30,7 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-black/10 py-4 text-center text-xs text-zinc-500">
-        &copy; {new Date().getFullYear()} The Glow Shop. All rights reserved.
+        &copy; {new Date().getFullYear()} Liora. All rights reserved.
       </div>
     </footer>
   );
