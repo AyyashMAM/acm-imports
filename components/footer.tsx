@@ -24,6 +24,9 @@ export function Footer() {
           <Link href="/cart" className="hover:text-brand">
             Cart
           </Link>
+          <Link href="/account" className="hover:text-brand">
+            Account
+          </Link>
           <span className="text-zinc-500">
             💵 Cash on delivery available
           </span>
