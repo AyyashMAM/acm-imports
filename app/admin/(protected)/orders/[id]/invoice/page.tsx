@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getOrderById } from "@/lib/admin/orders-data";
 import { SITE_NAME } from "@/lib/seo";
+import { formatPrice } from "@/lib/currency";
 import { PrintButton } from "@/components/admin/print-button";
 
 export const metadata: Metadata = { title: "Invoice" };
@@ -65,15 +66,15 @@ export default async function AdminOrderInvoicePage({
                 {item.variant_label ? ` (${item.variant_label})` : ""}
               </td>
               <td className="py-2">{item.quantity}</td>
-              <td className="py-2">${item.unit_price.toFixed(2)}</td>
-              <td className="py-2 text-right">${item.subtotal.toFixed(2)}</td>
+              <td className="py-2">{formatPrice(item.unit_price)}</td>
+              <td className="py-2 text-right">{formatPrice(item.subtotal)}</td>
             </tr>
           ))}
         </tbody>
       </table>
 
       <div className="mt-6 flex justify-end border-t border-black/20 pt-4 text-lg font-bold">
-        Total (cash on delivery): ${order.total_amount.toFixed(2)}
+        Total (cash on delivery): {formatPrice(order.total_amount)}
       </div>
     </div>
   );

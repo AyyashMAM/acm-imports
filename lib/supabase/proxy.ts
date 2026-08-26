@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import type { UserRole } from "@/lib/roles";
 
 // Refreshes the Supabase auth cookie on every matched request and resolves
-// the current user. Used by the root proxy.ts. getUser() (not getSession())
-// revalidates against the Auth server instead of trusting a possibly-stale
-// cookie.
+// the current user + role. Used by the root proxy.ts. getUser() (not
+// getSession()) revalidates against the Auth server instead of trusting a
+// possibly-stale cookie.
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
@@ -32,5 +33,15 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  return { response, user };
+  let role: UserRole | null = null;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+    role = (profile?.role as UserRole | undefined) ?? null;
+  }
+
+  return { response, user, role };
 }

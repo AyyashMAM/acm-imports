@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { formatPrice } from "@/lib/currency";
 import { ClearCartOnMount } from "@/components/clear-cart-on-mount";
 
 export const metadata: Metadata = {
@@ -44,13 +45,13 @@ export default async function OrderConfirmationPage({
             <span>
               {item.product_name} ({item.variant_label}) x{item.quantity}
             </span>
-            <span>${item.subtotal.toFixed(2)}</span>
+            <span>{formatPrice(item.subtotal)}</span>
           </li>
         ))}
       </ul>
       <div className="mb-10 flex justify-between border-t border-black/10 pt-4 font-semibold">
         <span>Total (cash on delivery)</span>
-        <span>${order.total_amount.toFixed(2)}</span>
+        <span>{formatPrice(order.total_amount)}</span>
       </div>
 
       <Link

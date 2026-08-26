@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireAdminUser } from "@/lib/admin/auth";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { isProductCategory, parseAttributesFromFormData } from "@/lib/category-fields";
 
 export async function updateProduct(productId: string, formData: FormData) {
   await requireAdminUser();
@@ -13,16 +14,19 @@ export async function updateProduct(productId: string, formData: FormData) {
   const basePrice = Number(formData.get("base_price"));
   const isActive = formData.get("is_active") === "on";
 
-  if (!name || Number.isNaN(basePrice) || basePrice < 0) {
+  if (!name || !isProductCategory(category) || Number.isNaN(basePrice) || basePrice < 0) {
     throw new Error("Invalid product details");
   }
+
+  const attributes = parseAttributesFromFormData(category, formData);
 
   const { error } = await supabaseAdmin
     .from("products")
     .update({
       name,
       description: description || null,
-      category: category || null,
+      category,
+      attributes,
       base_price: basePrice,
       is_active: isActive,
     })
@@ -41,6 +45,8 @@ export async function createVariant(productId: string, formData: FormData) {
   const costPriceRaw = formData.get("cost_price");
   const costPrice = costPriceRaw ? Number(costPriceRaw) : null;
   const stockQuantity = Number(formData.get("stock_quantity"));
+  const thresholdRaw = formData.get("low_stock_threshold");
+  const lowStockThreshold = thresholdRaw ? Number(thresholdRaw) : null;
 
   if (!label || Number.isNaN(price) || price < 0 || Number.isNaN(stockQuantity)) {
     throw new Error("Invalid variant details");
@@ -52,6 +58,7 @@ export async function createVariant(productId: string, formData: FormData) {
     price,
     cost_price: costPrice,
     stock_quantity: stockQuantity,
+    low_stock_threshold: lowStockThreshold,
   });
 
   if (error) throw new Error("Could not create variant");
@@ -68,6 +75,8 @@ export async function updateVariant(variantId: string, formData: FormData) {
   const costPrice = costPriceRaw ? Number(costPriceRaw) : null;
   const stockQuantity = Number(formData.get("stock_quantity"));
   const isActive = formData.get("is_active") === "on";
+  const thresholdRaw = formData.get("low_stock_threshold");
+  const lowStockThreshold = thresholdRaw ? Number(thresholdRaw) : null;
 
   if (!label || Number.isNaN(price) || price < 0 || Number.isNaN(stockQuantity)) {
     throw new Error("Invalid variant details");
@@ -81,6 +90,7 @@ export async function updateVariant(variantId: string, formData: FormData) {
       cost_price: costPrice,
       stock_quantity: stockQuantity,
       is_active: isActive,
+      low_stock_threshold: lowStockThreshold,
     })
     .eq("id", variantId);
 

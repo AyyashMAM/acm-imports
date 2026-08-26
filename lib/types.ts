@@ -16,6 +16,7 @@ export type Product = {
   name: string;
   description: string | null;
   category: string | null;
+  attributes: Record<string, string | boolean>;
   base_price: number;
   product_images: ProductImage[];
   product_variants: ProductVariant[];

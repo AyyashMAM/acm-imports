@@ -1,12 +1,24 @@
 import "server-only";
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import type { UserRole } from "@/lib/roles";
 
 async function getAdminUser() {
   const supabase = await createServerSupabaseClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  const role = (profile?.role as UserRole | undefined) ?? null;
+  if (role !== "admin") return null;
+
   return user;
 }
 

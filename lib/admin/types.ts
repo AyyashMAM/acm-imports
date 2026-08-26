@@ -20,6 +20,7 @@ export type AdminProductVariant = {
   price: number;
   cost_price: number | null;
   stock_quantity: number;
+  low_stock_threshold: number | null;
   is_active: boolean;
 };
 
@@ -35,6 +36,7 @@ export type AdminProduct = {
   name: string;
   description: string | null;
   category: string | null;
+  attributes: Record<string, string | boolean>;
   base_price: number;
   is_active: boolean;
   created_at: string;
@@ -57,6 +59,7 @@ export type Order = {
   id: string;
   status: OrderStatus;
   payment_method: string;
+  user_id: string | null;
   customer_name: string;
   customer_phone: string;
   customer_email: string | null;
@@ -66,4 +69,14 @@ export type Order = {
   total_amount: number;
   created_at: string;
   order_items: OrderItem[];
+};
+
+export type AdminCustomer = {
+  id: string;
+  email: string | null;
+  full_name: string | null;
+  phone: string | null;
+  created_at: string;
+  order_count: number;
+  total_spent: number;
 };

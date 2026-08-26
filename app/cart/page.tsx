@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/lib/cart-context";
+import { formatPrice } from "@/lib/currency";
 
 export default function CartPage() {
   const { items, updateQuantity, removeItem, totalPrice } = useCart();
@@ -42,7 +43,7 @@ export default function CartPage() {
             <div className="flex-1">
               <p className="font-medium">{item.productName}</p>
               <p className="text-sm text-zinc-500">{item.variantLabel}</p>
-              <p className="text-sm font-semibold">${item.price.toFixed(2)}</p>
+              <p className="text-sm font-semibold">{formatPrice(item.price)}</p>
             </div>
             <input
               type="number"
@@ -67,7 +68,7 @@ export default function CartPage() {
       </ul>
 
       <div className="mt-10 flex items-center justify-between border-t border-black/10 pt-6">
-        <p className="text-lg font-semibold">Total: ${totalPrice.toFixed(2)}</p>
+        <p className="text-lg font-semibold">Total: {formatPrice(totalPrice)}</p>
         <Link
           href="/checkout"
           className="rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background transition-colors hover:bg-[#383838]"

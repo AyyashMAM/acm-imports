@@ -9,7 +9,7 @@ export default async function AdminProductsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-extrabold tracking-tight">Products</h1>
         <Link
           href="/admin/products/new"
@@ -20,8 +20,8 @@ export default async function AdminProductsPage() {
         </Link>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-black/10 bg-white">
-        <table className="w-full text-left text-sm">
+      <div className="overflow-x-auto rounded-2xl border border-black/10 bg-white">
+        <table className="w-full min-w-[640px] text-left text-sm">
           <thead className="border-b border-black/10 bg-zinc-50 text-xs font-semibold uppercase tracking-wide text-zinc-500">
             <tr>
               <th className="px-4 py-3">Name</th>

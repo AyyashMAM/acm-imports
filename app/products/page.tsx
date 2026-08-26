@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getActiveProducts } from "@/lib/products";
+import { getMyWishlistProductIds } from "@/lib/account/wishlist-data";
 import { ProductCard } from "@/components/product-card";
 
 export async function generateMetadata({
@@ -29,7 +30,10 @@ export default async function ProductsPage({ searchParams }: PageProps<"/product
   const { category } = await searchParams;
   const activeCategory = Array.isArray(category) ? category[0] : category;
 
-  const products = await getActiveProducts();
+  const [products, wishlistedIds] = await Promise.all([
+    getActiveProducts(),
+    getMyWishlistProductIds(),
+  ]);
   const categories = Array.from(
     new Set(
       products
@@ -95,7 +99,11 @@ export default async function ProductsPage({ searchParams }: PageProps<"/product
         ) : (
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-3">
             {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                isWishlisted={wishlistedIds.has(product.id)}
+              />
             ))}
           </div>
         )}

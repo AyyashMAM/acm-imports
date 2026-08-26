@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { createProduct } from "../actions";
+import { CategoryAttributeFields } from "@/components/admin/category-attribute-fields";
 
 export const metadata: Metadata = { title: "New product" };
 
@@ -16,14 +17,7 @@ export default function NewProductPage() {
             className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
           />
         </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium">Category</label>
-          <input
-            name="category"
-            placeholder="Cosmetics, Chocolates, Fancy Items..."
-            className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
-          />
-        </div>
+        <CategoryAttributeFields />
         <div>
           <label className="mb-1 block text-sm font-medium">Description</label>
           <textarea
@@ -33,7 +27,7 @@ export default function NewProductPage() {
           />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium">Starting price</label>
+          <label className="mb-1 block text-sm font-medium">Starting price (LKR)</label>
           <input
             name="base_price"
             type="number"

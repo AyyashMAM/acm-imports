@@ -3,6 +3,9 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getProductById } from "@/lib/products";
 import { AddToCart } from "@/components/add-to-cart";
+import { WishlistButton } from "@/components/wishlist-button";
+import { isProductWishlisted } from "@/app/account/actions";
+import { CATEGORY_FIELDS, isProductCategory } from "@/lib/category-fields";
 
 export async function generateMetadata({
   params,
@@ -38,12 +41,24 @@ export default async function ProductDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const product = await getProductById(id);
+  const [product, wishlisted] = await Promise.all([
+    getProductById(id),
+    isProductWishlisted(id),
+  ]);
   if (!product) notFound();
 
   const images = [...product.product_images].sort(
     (a, b) => a.sort_order - b.sort_order
   );
+
+  const specs = isProductCategory(product.category)
+    ? CATEGORY_FIELDS[product.category]
+        .map((field) => ({ label: field.label, value: product.attributes[field.key] }))
+        .filter(
+          (spec): spec is { label: string; value: string | boolean } =>
+            spec.value !== undefined && spec.value !== ""
+        )
+    : [];
 
   const productJsonLd = {
     "@context": "https://schema.org",
@@ -55,7 +70,7 @@ export default async function ProductDetailPage({
     offers: {
       "@type": "Offer",
       price: product.base_price,
-      priceCurrency: "USD",
+      priceCurrency: "LKR",
       availability: product.product_variants.some((v) => v.stock_quantity > 0)
         ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock",
@@ -98,7 +113,24 @@ export default async function ProductDetailPage({
             {product.description}
           </p>
         )}
-        <AddToCart product={product} />
+        {specs.length > 0 && (
+          <dl className="grid grid-cols-2 gap-x-4 gap-y-2 border-t border-black/10 pt-4 text-sm">
+            {specs.map((spec) => (
+              <div key={spec.label} className="contents">
+                <dt className="text-zinc-500">{spec.label}</dt>
+                <dd className="font-medium">
+                  {typeof spec.value === "boolean" ? (spec.value ? "Yes" : "No") : spec.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )}
+        <div className="flex items-start gap-3">
+          <div className="flex-1">
+            <AddToCart product={product} />
+          </div>
+          <WishlistButton productId={product.id} initialSaved={wishlisted} />
+        </div>
       </div>
     </div>
   );

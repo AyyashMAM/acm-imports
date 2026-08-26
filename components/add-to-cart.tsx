@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/cart-context";
 import type { Product } from "@/lib/types";
+import { formatPrice } from "@/lib/currency";
 
 export function AddToCart({ product }: { product: Product }) {
   const variants = product.product_variants;
@@ -50,7 +51,7 @@ export function AddToCart({ product }: { product: Product }) {
           >
             {variants.map((v) => (
               <option key={v.id} value={v.id} disabled={v.stock_quantity <= 0}>
-                {v.label} — ${v.price.toFixed(2)}
+                {v.label} — {formatPrice(v.price)}
                 {v.stock_quantity <= 0 ? " (out of stock)" : ""}
               </option>
             ))}
@@ -58,7 +59,7 @@ export function AddToCart({ product }: { product: Product }) {
         </div>
       )}
 
-      <p className="text-3xl font-extrabold text-brand">${variant.price.toFixed(2)}</p>
+      <p className="text-3xl font-extrabold text-brand">{formatPrice(variant.price)}</p>
 
       <div className="flex items-center gap-3">
         <label className="text-sm font-medium">Qty</label>

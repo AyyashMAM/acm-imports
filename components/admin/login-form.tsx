@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabaseBrowser } from "@/lib/supabase/browser";
 
@@ -16,13 +17,26 @@ export function LoginForm() {
     setPending(true);
     setError(null);
 
-    const { error } = await supabaseBrowser.auth.signInWithPassword({
+    const { data, error } = await supabaseBrowser.auth.signInWithPassword({
       email,
       password,
     });
 
-    if (error) {
+    if (error || !data.user) {
       setError("Invalid email or password.");
+      setPending(false);
+      return;
+    }
+
+    const { data: profile } = await supabaseBrowser
+      .from("profiles")
+      .select("role")
+      .eq("id", data.user.id)
+      .single();
+
+    if (profile?.role !== "admin") {
+      await supabaseBrowser.auth.signOut();
+      setError("This login is for store admins only.");
       setPending(false);
       return;
     }
@@ -45,7 +59,12 @@ export function LoginForm() {
         />
       </div>
       <div>
-        <label className="mb-1 block text-sm font-medium">Password</label>
+        <div className="mb-1 flex items-center justify-between">
+          <label className="block text-sm font-medium">Password</label>
+          <Link href="/admin/forgot-password" className="text-xs font-semibold text-zinc-500 hover:text-zinc-800">
+            Forgot password?
+          </Link>
+        </div>
         <input
           type="password"
           value={password}

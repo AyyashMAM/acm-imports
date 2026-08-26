@@ -1,5 +1,5 @@
 {
-  "name": "acm-imports",
+  "name": "liora",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -14,6 +14,7 @@
     "next": "16.3.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "resend": "^6.22.1",
     "server-only": "^0.0.1"
   },
   "devDependencies": {

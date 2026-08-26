@@ -14,9 +14,9 @@ export const REPORT_RANGES: { value: ReportRange; label: string }[] = [
 // Sri Lanka is a fixed UTC+5:30 offset (no DST), so day boundaries can be
 // computed without a timezone database: shift "now" by the offset to read
 // Colombo-local wall-clock fields, then shift the resulting midnight back.
-const COLOMBO_OFFSET_MS = (5 * 60 + 30) * 60 * 1000;
+export const COLOMBO_OFFSET_MS = (5 * 60 + 30) * 60 * 1000;
 
-function startOfColomboDay(daysAgo: number): Date {
+export function startOfColomboDay(daysAgo: number): Date {
   const shiftedNow = new Date(Date.now() + COLOMBO_OFFSET_MS);
   const localMidnightShifted = Date.UTC(
     shiftedNow.getUTCFullYear(),

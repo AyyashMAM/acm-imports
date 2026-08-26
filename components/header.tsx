@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/lib/cart-context";
+import { AccountNavLink } from "@/components/account-nav-link";
 
 export function Header() {
   const { totalItems } = useCart();
@@ -27,6 +28,7 @@ export function Header() {
             <Link href="/products" className="hover:text-brand">
               Shop
             </Link>
+            <AccountNavLink />
             <Link
               href="/cart"
               className="flex items-center gap-1.5 hover:text-brand"

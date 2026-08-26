@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getOrders } from "@/lib/admin/orders-data";
 import { ORDER_STATUSES, type OrderStatus } from "@/lib/admin/types";
+import { formatPrice } from "@/lib/currency";
 
 export const metadata: Metadata = { title: "Orders" };
 
@@ -52,8 +53,8 @@ export default async function AdminOrdersPage({
         ))}
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-black/10 bg-white">
-        <table className="w-full text-left text-sm">
+      <div className="overflow-x-auto rounded-2xl border border-black/10 bg-white">
+        <table className="w-full min-w-[640px] text-left text-sm">
           <thead className="border-b border-black/10 bg-zinc-50 text-xs font-semibold uppercase tracking-wide text-zinc-500">
             <tr>
               <th className="px-4 py-3">Customer</th>
@@ -77,9 +78,18 @@ export default async function AdminOrdersPage({
                   >
                     {order.customer_name}
                   </Link>
+                  {order.user_id ? (
+                    <span className="ml-2 rounded-full bg-brand-light px-2 py-0.5 text-[10px] font-bold uppercase text-brand-dark">
+                      Account
+                    </span>
+                  ) : (
+                    <span className="ml-2 rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-bold uppercase text-zinc-500">
+                      Guest
+                    </span>
+                  )}
                 </td>
                 <td className="px-4 py-3 text-zinc-500">{order.city}</td>
-                <td className="px-4 py-3">${order.total_amount.toFixed(2)}</td>
+                <td className="px-4 py-3">{formatPrice(order.total_amount)}</td>
                 <td className="px-4 py-3">
                   <span
                     className={`rounded-full px-2.5 py-1 text-xs font-bold capitalize ${STATUS_STYLES[order.status]}`}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getAdminProductById } from "@/lib/admin/products-data";
 import { ImageManager } from "@/components/admin/image-manager";
+import { CategoryAttributeFields } from "@/components/admin/category-attribute-fields";
 import {
   updateProduct,
   createVariant,
@@ -43,14 +44,10 @@ export default async function AdminProductEditPage({
               className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
             />
           </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium">Category</label>
-            <input
-              name="category"
-              defaultValue={product.category ?? ""}
-              className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
-            />
-          </div>
+          <CategoryAttributeFields
+            defaultCategory={product.category}
+            defaultAttributes={product.attributes}
+          />
           <div>
             <label className="mb-1 block text-sm font-medium">Description</label>
             <textarea
@@ -61,7 +58,7 @@ export default async function AdminProductEditPage({
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium">Display price</label>
+            <label className="mb-1 block text-sm font-medium">Display price (LKR)</label>
             <input
               name="base_price"
               type="number"
@@ -101,7 +98,7 @@ export default async function AdminProductEditPage({
             <form
               key={variant.id}
               action={updateVariant.bind(null, variant.id)}
-              className="grid grid-cols-2 gap-3 rounded-lg border border-black/10 p-4 sm:grid-cols-5 sm:items-end"
+              className="grid grid-cols-2 gap-3 rounded-lg border border-black/10 p-4 sm:grid-cols-6 sm:items-end"
             >
               <input type="hidden" name="product_id" value={product.id} />
               <div>
@@ -114,7 +111,7 @@ export default async function AdminProductEditPage({
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs font-medium">Sell price</label>
+                <label className="mb-1 block text-xs font-medium">Sell price (LKR)</label>
                 <input
                   name="price"
                   type="number"
@@ -126,7 +123,7 @@ export default async function AdminProductEditPage({
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs font-medium">Cost price</label>
+                <label className="mb-1 block text-xs font-medium">Cost price (LKR)</label>
                 <input
                   name="cost_price"
                   type="number"
@@ -147,6 +144,17 @@ export default async function AdminProductEditPage({
                   className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
                 />
               </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium">Low stock at</label>
+                <input
+                  name="low_stock_threshold"
+                  type="number"
+                  min="0"
+                  defaultValue={variant.low_stock_threshold ?? ""}
+                  placeholder="Store default"
+                  className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
+                />
+              </div>
               <div className="flex items-center justify-between gap-2">
                 <label className="flex items-center gap-1.5 text-xs font-medium">
                   <input
@@ -163,7 +171,7 @@ export default async function AdminProductEditPage({
                   Save
                 </button>
               </div>
-              <div className="col-span-2 sm:col-span-5">
+              <div className="col-span-2 sm:col-span-6">
                 <button
                   type="submit"
                   formAction={deleteVariant.bind(null, variant.id, product.id)}
@@ -178,7 +186,7 @@ export default async function AdminProductEditPage({
 
         <form
           action={createVariantWithId}
-          className="mt-6 grid grid-cols-2 gap-3 rounded-lg border border-dashed border-black/20 p-4 sm:grid-cols-5 sm:items-end"
+          className="mt-6 grid grid-cols-2 gap-3 rounded-lg border border-dashed border-black/20 p-4 sm:grid-cols-6 sm:items-end"
         >
           <div>
             <label className="mb-1 block text-xs font-medium">Label</label>
@@ -218,6 +226,16 @@ export default async function AdminProductEditPage({
               min="0"
               defaultValue={0}
               required
+              className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium">Low stock at</label>
+            <input
+              name="low_stock_threshold"
+              type="number"
+              min="0"
+              placeholder="Store default"
               className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
             />
           </div>

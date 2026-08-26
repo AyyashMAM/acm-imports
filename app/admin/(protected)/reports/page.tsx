@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getSalesReport, REPORT_RANGES, type ReportRange } from "@/lib/admin/reports-data";
+import { formatPrice } from "@/lib/currency";
 
 export const metadata: Metadata = { title: "Reports" };
 
@@ -37,19 +38,19 @@ export default async function AdminReportsPage({
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <Stat label="Revenue" value={`$${report.revenue.toFixed(2)}`} />
-        <Stat label="Cost" value={`$${report.cost.toFixed(2)}`} />
-        <Stat label="Profit" value={`$${report.profit.toFixed(2)}`} highlight />
+        <Stat label="Revenue" value={formatPrice(report.revenue)} />
+        <Stat label="Cost" value={formatPrice(report.cost)} />
+        <Stat label="Profit" value={formatPrice(report.profit)} highlight />
         <Stat label="Orders" value={String(report.orderCount)} />
       </div>
 
       <p className="text-xs text-zinc-500">
-        Excludes cancelled orders. Items without a cost price are counted as $0 cost, which
+        Excludes cancelled orders. Items without a cost price are counted as Rs. 0 cost, which
         can overstate profit until costs are filled in on each product variant.
       </p>
 
-      <div className="overflow-hidden rounded-2xl border border-black/10 bg-white">
-        <table className="w-full text-left text-sm">
+      <div className="overflow-x-auto rounded-2xl border border-black/10 bg-white">
+        <table className="w-full min-w-[560px] text-left text-sm">
           <thead className="border-b border-black/10 bg-zinc-50 text-xs font-semibold uppercase tracking-wide text-zinc-500">
             <tr>
               <th className="px-4 py-3">Customer</th>
@@ -74,7 +75,7 @@ export default async function AdminReportsPage({
                   {new Date(order.created_at).toLocaleDateString()}
                 </td>
                 <td className="px-4 py-3 capitalize">{order.status}</td>
-                <td className="px-4 py-3">${order.total_amount.toFixed(2)}</td>
+                <td className="px-4 py-3">{formatPrice(order.total_amount)}</td>
               </tr>
             ))}
           </tbody>

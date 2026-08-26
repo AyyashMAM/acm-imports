@@ -2,6 +2,9 @@
 
 import { redirect } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { sendOrderConfirmationEmail } from "@/lib/email";
+import type { Order } from "@/lib/admin/types";
 
 type CheckoutCartItem = {
   variantId: string;
@@ -36,6 +39,13 @@ export async function placeOrder(
   if (!Array.isArray(cart) || cart.length === 0) {
     return { error: "Your cart is empty." };
   }
+
+  // Signed-in customers get their order linked to their account; guests
+  // check out exactly as before (user stays null).
+  const supabase = await createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const variantIds = cart.map((i) => i.variantId);
   const { data: variants, error: variantsError } = await supabaseAdmin
@@ -87,6 +97,7 @@ export async function placeOrder(
   const { data: order, error: orderError } = await supabaseAdmin
     .from("orders")
     .insert({
+      user_id: user?.id ?? null,
       customer_name: customerName,
       customer_phone: customerPhone,
       customer_email: customerEmail || null,
@@ -111,13 +122,49 @@ export async function placeOrder(
     return { error: "Could not place your order. Please try again." };
   }
 
+  // Atomic, race-safe decrement (supabase/migrations/20260826000002_stock_management.sql):
+  // only succeeds if enough stock is still available, so two customers racing
+  // for the last unit can't both win. If a race causes one to lose here (rare —
+  // the check above already passed a moment earlier), cancel the order rather
+  // than silently overselling.
+  let oversold = false;
   for (const item of orderItems) {
-    const variant = variantMap.get(item.product_variant_id)!;
-    await supabaseAdmin
-      .from("product_variants")
-      .update({ stock_quantity: variant.stock_quantity - item.quantity })
-      .eq("id", item.product_variant_id);
+    const { data: ok, error: decrementError } = await supabaseAdmin.rpc(
+      "decrement_variant_stock",
+      { p_variant_id: item.product_variant_id, p_quantity: item.quantity }
+    );
+    if (decrementError || !ok) {
+      oversold = true;
+      break;
+    }
   }
+
+  if (oversold) {
+    await supabaseAdmin.from("orders").update({ status: "cancelled" }).eq("id", order.id);
+    return {
+      error:
+        "Sorry, one of these items just sold out while you were checking out. Your order was not placed — please review your cart.",
+    };
+  }
+
+  const fullOrder: Order = {
+    id: order.id,
+    status: "pending",
+    payment_method: "cod",
+    user_id: user?.id ?? null,
+    customer_name: customerName,
+    customer_phone: customerPhone,
+    customer_email: customerEmail || null,
+    delivery_address: deliveryAddress,
+    city,
+    notes: notes || null,
+    total_amount: total,
+    created_at: new Date().toISOString(),
+    order_items: orderItems.map((item, i) => ({ id: String(i), ...item })),
+  };
+  await sendOrderConfirmationEmail(fullOrder).catch(() => {
+    // Best-effort: a failed confirmation email shouldn't block the order.
+  });
 
   redirect(`/order-confirmation/${order.id}`);
 }

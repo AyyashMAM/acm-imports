@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireAdminUser } from "@/lib/admin/auth";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { isProductCategory, parseAttributesFromFormData } from "@/lib/category-fields";
 
 export async function createProduct(formData: FormData) {
   await requireAdminUser();
@@ -13,16 +14,19 @@ export async function createProduct(formData: FormData) {
   const category = String(formData.get("category") ?? "").trim();
   const basePrice = Number(formData.get("base_price"));
 
-  if (!name || Number.isNaN(basePrice) || basePrice < 0) {
+  if (!name || !isProductCategory(category) || Number.isNaN(basePrice) || basePrice < 0) {
     throw new Error("Invalid product details");
   }
+
+  const attributes = parseAttributesFromFormData(category, formData);
 
   const { data: product, error } = await supabaseAdmin
     .from("products")
     .insert({
       name,
       description: description || null,
-      category: category || null,
+      category,
+      attributes,
       base_price: basePrice,
     })
     .select("id")
