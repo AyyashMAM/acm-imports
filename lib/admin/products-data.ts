@@ -1,5 +1,6 @@
 import "server-only";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { isUuid } from "@/lib/uuid";
 import type { AdminProduct } from "./types";
 
 const ADMIN_PRODUCT_SELECT =
@@ -18,6 +19,8 @@ export async function getAllProducts(): Promise<AdminProduct[]> {
 export async function getAdminProductById(
   id: string
 ): Promise<AdminProduct | null> {
+  if (!isUuid(id)) return null;
+
   const { data, error } = await supabaseAdmin
     .from("products")
     .select(ADMIN_PRODUCT_SELECT)

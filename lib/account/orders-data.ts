@@ -1,5 +1,6 @@
 import "server-only";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { isUuid } from "@/lib/uuid";
 import type { Order } from "@/lib/admin/types";
 
 const ORDER_SELECT =
@@ -21,6 +22,8 @@ export async function getMyOrders(): Promise<Order[]> {
 }
 
 export async function getMyOrderById(id: string): Promise<Order | null> {
+  if (!isUuid(id)) return null;
+
   const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
     .from("orders")

@@ -1,5 +1,6 @@
 import "server-only";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { isUuid } from "@/lib/uuid";
 import type { Order, OrderStatus } from "./types";
 
 const ORDER_SELECT =
@@ -19,6 +20,8 @@ export async function getOrders(status?: OrderStatus): Promise<Order[]> {
 }
 
 export async function getOrdersByUserId(userId: string): Promise<Order[]> {
+  if (!isUuid(userId)) return [];
+
   const { data, error } = await supabaseAdmin
     .from("orders")
     .select(ORDER_SELECT)
@@ -30,6 +33,8 @@ export async function getOrdersByUserId(userId: string): Promise<Order[]> {
 }
 
 export async function getOrderById(id: string): Promise<Order | null> {
+  if (!isUuid(id)) return null;
+
   const { data, error } = await supabaseAdmin
     .from("orders")
     .select(ORDER_SELECT)

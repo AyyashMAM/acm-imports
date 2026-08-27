@@ -1,5 +1,6 @@
 import "server-only";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { isUuid } from "@/lib/uuid";
 import type { AdminCustomer } from "./types";
 
 export type CustomerAddress = {
@@ -56,6 +57,8 @@ export async function getCustomers(): Promise<AdminCustomer[]> {
 }
 
 export async function getCustomerById(id: string): Promise<AdminCustomer | null> {
+  if (!isUuid(id)) return null;
+
   const { data: profile, error } = await supabaseAdmin
     .from("profiles")
     .select("id, full_name, phone, created_at, role")
@@ -84,6 +87,8 @@ export async function getCustomerById(id: string): Promise<AdminCustomer | null>
 }
 
 export async function getCustomerAddresses(userId: string): Promise<CustomerAddress[]> {
+  if (!isUuid(userId)) return [];
+
   const { data, error } = await supabaseAdmin
     .from("addresses")
     .select("id, label, recipient_name, phone, address_line, city, is_default")
