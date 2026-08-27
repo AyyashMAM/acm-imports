@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { sendOrderConfirmationEmail } from "@/lib/email";
+import { notifyOrderPlaced } from "@/lib/notifications";
 import type { Order } from "@/lib/admin/types";
 
 type CheckoutCartItem = {
@@ -107,7 +107,7 @@ export async function placeOrder(
       payment_method: "cod",
       total_amount: total,
     })
-    .select("id")
+    .select("id, order_number")
     .single();
 
   if (orderError || !order) {
@@ -149,6 +149,7 @@ export async function placeOrder(
 
   const fullOrder: Order = {
     id: order.id,
+    order_number: order.order_number,
     status: "pending",
     payment_method: "cod",
     user_id: user?.id ?? null,
@@ -158,13 +159,14 @@ export async function placeOrder(
     delivery_address: deliveryAddress,
     city,
     notes: notes || null,
+    cancellation_reason: null,
+    courier_name: null,
+    tracking_number: null,
     total_amount: total,
     created_at: new Date().toISOString(),
     order_items: orderItems.map((item, i) => ({ id: String(i), ...item })),
   };
-  await sendOrderConfirmationEmail(fullOrder).catch(() => {
-    // Best-effort: a failed confirmation email shouldn't block the order.
-  });
+  await notifyOrderPlaced(fullOrder);
 
   redirect(`/order-confirmation/${order.id}`);
 }

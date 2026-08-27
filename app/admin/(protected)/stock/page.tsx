@@ -62,6 +62,7 @@ export default async function AdminStockPage() {
               <th className="px-4 py-3">Product</th>
               <th className="px-4 py-3">Variant</th>
               <th className="px-4 py-3">Stock</th>
+              <th className="px-4 py-3">Reserved</th>
               <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3">Adjust</th>
             </tr>
@@ -80,6 +81,15 @@ export default async function AdminStockPage() {
                 </td>
                 <td className="px-4 py-3 text-zinc-500">{row.variant.label}</td>
                 <td className="px-4 py-3 font-semibold">{row.variant.stock_quantity}</td>
+                <td className="px-4 py-3 text-zinc-500">
+                  {row.reserved > 0 ? (
+                    <span title="Tied up in orders awaiting confirmation">
+                      {row.reserved} pending
+                    </span>
+                  ) : (
+                    "—"
+                  )}
+                </td>
                 <td className="px-4 py-3">
                   <span
                     className={`rounded-full px-2.5 py-1 text-xs font-bold ${STATUS_STYLES[row.status]}`}

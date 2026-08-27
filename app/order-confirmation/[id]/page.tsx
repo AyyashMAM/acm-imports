@@ -20,7 +20,7 @@ export default async function OrderConfirmationPage({
   const { data: order } = await supabaseAdmin
     .from("orders")
     .select(
-      "id, customer_name, delivery_address, city, total_amount, created_at, order_items ( product_name, variant_label, quantity, unit_price, subtotal )"
+      "id, order_number, customer_name, delivery_address, city, total_amount, created_at, order_items ( product_name, variant_label, quantity, unit_price, subtotal )"
     )
     .eq("id", id)
     .maybeSingle();
@@ -33,10 +33,13 @@ export default async function OrderConfirmationPage({
       <h1 className="mb-2 text-2xl font-semibold tracking-tight">
         Thank you, {order.customer_name}!
       </h1>
+      <p className="mb-1 text-sm font-semibold text-zinc-500">
+        Order #{order.order_number}
+      </p>
       <p className="mb-8 text-zinc-600">
-        Your order has been placed. We&apos;ll contact you to confirm delivery
-        to {order.delivery_address}, {order.city}. Pay in cash when it
-        arrives.
+        We&apos;ve received your order — our team will confirm it shortly
+        before dispatching to {order.delivery_address}, {order.city}. Pay in
+        cash when it arrives.
       </p>
 
       <ul className="mb-6 flex flex-col gap-3 text-left text-sm">
@@ -54,12 +57,20 @@ export default async function OrderConfirmationPage({
         <span>{formatPrice(order.total_amount)}</span>
       </div>
 
-      <Link
-        href="/products"
-        className="inline-block rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background transition-colors hover:bg-[#383838]"
-      >
-        Continue shopping
-      </Link>
+      <div className="flex flex-wrap justify-center gap-3">
+        <Link
+          href={`/track-order?order=${order.order_number}`}
+          className="inline-block rounded-full border border-black/15 px-6 py-3 text-sm font-semibold hover:bg-black/[.04]"
+        >
+          Track this order
+        </Link>
+        <Link
+          href="/products"
+          className="inline-block rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background transition-colors hover:bg-[#383838]"
+        >
+          Continue shopping
+        </Link>
+      </div>
     </div>
   );
 }

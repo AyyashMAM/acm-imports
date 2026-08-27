@@ -1,17 +1,7 @@
-export type OrderStatus =
-  | "pending"
-  | "confirmed"
-  | "shipped"
-  | "delivered"
-  | "cancelled";
+import type { OrderStatus } from "@/lib/order-status";
 
-export const ORDER_STATUSES: OrderStatus[] = [
-  "pending",
-  "confirmed",
-  "shipped",
-  "delivered",
-  "cancelled",
-];
+export type { OrderStatus } from "@/lib/order-status";
+export { ORDER_STATUSES } from "@/lib/order-status";
 
 export type AdminProductVariant = {
   id: string;
@@ -57,6 +47,7 @@ export type OrderItem = {
 
 export type Order = {
   id: string;
+  order_number: string;
   status: OrderStatus;
   payment_method: string;
   user_id: string | null;
@@ -66,6 +57,9 @@ export type Order = {
   delivery_address: string;
   city: string;
   notes: string | null;
+  cancellation_reason: string | null;
+  courier_name: string | null;
+  tracking_number: string | null;
   total_amount: number;
   created_at: string;
   order_items: OrderItem[];

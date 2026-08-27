@@ -27,6 +27,9 @@ export function Footer() {
           <Link href="/account" className="hover:text-brand">
             Account
           </Link>
+          <Link href="/track-order" className="hover:text-brand">
+            Track order
+          </Link>
           <span className="text-zinc-500">
             💵 Cash on delivery available
           </span>

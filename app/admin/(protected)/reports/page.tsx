@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getSalesReport, REPORT_RANGES, type ReportRange } from "@/lib/admin/reports-data";
 import { formatPrice } from "@/lib/currency";
+import { STATUS_LABELS } from "@/lib/order-status";
 
 export const metadata: Metadata = { title: "Reports" };
 
@@ -74,7 +75,7 @@ export default async function AdminReportsPage({
                 <td className="px-4 py-3 text-zinc-500">
                   {new Date(order.created_at).toLocaleDateString()}
                 </td>
-                <td className="px-4 py-3 capitalize">{order.status}</td>
+                <td className="px-4 py-3">{STATUS_LABELS[order.status]}</td>
                 <td className="px-4 py-3">{formatPrice(order.total_amount)}</td>
               </tr>
             ))}

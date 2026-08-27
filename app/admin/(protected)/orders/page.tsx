@@ -2,17 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getOrders } from "@/lib/admin/orders-data";
 import { ORDER_STATUSES, type OrderStatus } from "@/lib/admin/types";
+import { STATUS_LABELS, STATUS_STYLES } from "@/lib/order-status";
 import { formatPrice } from "@/lib/currency";
 
 export const metadata: Metadata = { title: "Orders" };
-
-const STATUS_STYLES: Record<OrderStatus, string> = {
-  pending: "bg-amber-100 text-amber-700",
-  confirmed: "bg-blue-100 text-blue-700",
-  shipped: "bg-purple-100 text-purple-700",
-  delivered: "bg-green-100 text-green-700",
-  cancelled: "bg-zinc-200 text-zinc-600",
-};
 
 export default async function AdminOrdersPage({
   searchParams,
@@ -44,19 +37,20 @@ export default async function AdminOrdersPage({
             key={s}
             href={`/admin/orders?status=${s}`}
             prefetch={false}
-            className={`rounded-full px-4 py-1.5 text-sm font-semibold capitalize ${
+            className={`rounded-full px-4 py-1.5 text-sm font-semibold ${
               activeStatus === s ? "bg-zinc-900 text-white" : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200"
             }`}
           >
-            {s}
+            {STATUS_LABELS[s]}
           </Link>
         ))}
       </div>
 
       <div className="overflow-x-auto rounded-2xl border border-black/10 bg-white">
-        <table className="w-full min-w-[640px] text-left text-sm">
+        <table className="w-full min-w-[720px] text-left text-sm">
           <thead className="border-b border-black/10 bg-zinc-50 text-xs font-semibold uppercase tracking-wide text-zinc-500">
             <tr>
+              <th className="px-4 py-3">Order</th>
               <th className="px-4 py-3">Customer</th>
               <th className="px-4 py-3">City</th>
               <th className="px-4 py-3">Total</th>
@@ -76,8 +70,11 @@ export default async function AdminOrdersPage({
                     prefetch={false}
                     className="font-semibold hover:text-brand"
                   >
-                    {order.customer_name}
+                    {order.order_number}
                   </Link>
+                </td>
+                <td className="px-4 py-3">
+                  {order.customer_name}
                   {order.user_id ? (
                     <span className="ml-2 rounded-full bg-brand-light px-2 py-0.5 text-[10px] font-bold uppercase text-brand-dark">
                       Account
@@ -92,9 +89,9 @@ export default async function AdminOrdersPage({
                 <td className="px-4 py-3">{formatPrice(order.total_amount)}</td>
                 <td className="px-4 py-3">
                   <span
-                    className={`rounded-full px-2.5 py-1 text-xs font-bold capitalize ${STATUS_STYLES[order.status]}`}
+                    className={`rounded-full px-2.5 py-1 text-xs font-bold ${STATUS_STYLES[order.status]}`}
                   >
-                    {order.status}
+                    {STATUS_LABELS[order.status]}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-zinc-500">

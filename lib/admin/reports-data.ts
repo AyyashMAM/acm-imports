@@ -51,7 +51,7 @@ export type SalesReport = {
 };
 
 const ORDER_SELECT =
-  "id, status, payment_method, customer_name, customer_phone, customer_email, delivery_address, city, notes, total_amount, created_at, order_items ( id, product_variant_id, product_name, variant_label, unit_price, unit_cost, quantity, subtotal )";
+  "id, order_number, status, payment_method, user_id, customer_name, customer_phone, customer_email, delivery_address, city, notes, cancellation_reason, courier_name, tracking_number, total_amount, created_at, order_items ( id, product_variant_id, product_name, variant_label, unit_price, unit_cost, quantity, subtotal )";
 
 export async function getSalesReport(range: ReportRange): Promise<SalesReport> {
   const start = rangeStart(range);

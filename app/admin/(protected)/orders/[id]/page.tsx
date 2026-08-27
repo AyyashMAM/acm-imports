@@ -2,11 +2,17 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getOrderById } from "@/lib/admin/orders-data";
-import { ORDER_STATUSES } from "@/lib/admin/types";
 import { formatPrice } from "@/lib/currency";
+import { OrderConfirmCancel } from "@/components/admin/order-confirm-cancel";
 import { updateOrderStatus } from "./actions";
 
 export const metadata: Metadata = { title: "Order detail" };
+
+// Confirm/Cancel are dedicated actions (they carry side effects — a
+// notification, and for Cancel, a stock restore + required reason), so the
+// generic dropdown only ever offers the stages after that decision has been
+// made.
+const POST_CONFIRMATION_STATUSES = ["confirmed", "processing", "shipped", "delivered"] as const;
 
 export default async function AdminOrderDetailPage({
   params,
@@ -20,9 +26,12 @@ export default async function AdminOrderDetailPage({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-extrabold tracking-tight">
-          Order — {order.customer_name}
-        </h1>
+        <div>
+          <h1 className="text-2xl font-extrabold tracking-tight">
+            Order #{order.order_number}
+          </h1>
+          <p className="text-sm text-zinc-500">{order.customer_name}</p>
+        </div>
         <Link
           href={`/admin/orders/${order.id}/invoice`}
           prefetch={false}
@@ -56,25 +65,61 @@ export default async function AdminOrderDetailPage({
 
         <section className="rounded-2xl border border-black/10 bg-white p-6">
           <h2 className="mb-3 text-lg font-bold">Status</h2>
-          <form action={updateStatusWithId} className="flex flex-col gap-3">
-            <select
-              name="status"
-              defaultValue={order.status}
-              className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm capitalize"
-            >
-              {ORDER_STATUSES.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-            <button
-              type="submit"
-              className="w-fit rounded-full bg-brand px-5 py-2 text-sm font-bold text-white hover:bg-brand-dark"
-            >
-              Update status
-            </button>
-          </form>
+
+          {order.status === "pending" ? (
+            <OrderConfirmCancel orderId={order.id} />
+          ) : order.status === "cancelled" ? (
+            <div className="text-sm">
+              <span className="rounded-full bg-zinc-200 px-3 py-1.5 font-bold text-zinc-600">
+                Cancelled
+              </span>
+              {order.cancellation_reason && (
+                <p className="mt-2 text-zinc-500">Reason: {order.cancellation_reason}</p>
+              )}
+            </div>
+          ) : (
+            <form action={updateStatusWithId} className="flex flex-col gap-3">
+              <select
+                name="status"
+                defaultValue={order.status}
+                className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm capitalize"
+              >
+                {POST_CONFIRMATION_STATUSES.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="mb-1 block text-xs font-medium">Courier</label>
+                  <input
+                    name="courier_name"
+                    defaultValue={order.courier_name ?? ""}
+                    placeholder="e.g. Domex"
+                    className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium">Tracking number</label>
+                  <input
+                    name="tracking_number"
+                    defaultValue={order.tracking_number ?? ""}
+                    className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
+                  />
+                </div>
+              </div>
+              <p className="text-xs text-zinc-500">
+                Courier/tracking are only saved when status is set to Shipped.
+              </p>
+              <button
+                type="submit"
+                className="w-fit rounded-full bg-brand px-5 py-2 text-sm font-bold text-white hover:bg-brand-dark"
+              >
+                Update status
+              </button>
+            </form>
+          )}
         </section>
       </div>
 

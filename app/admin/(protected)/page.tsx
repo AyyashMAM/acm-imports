@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getOverviewStats } from "@/lib/admin/overview-data";
 import { SalesChart } from "@/components/admin/sales-chart";
+import { OrderConfirmCancel } from "@/components/admin/order-confirm-cancel";
 import { formatPrice } from "@/lib/currency";
 
 export const metadata: Metadata = { title: "Overview" };
@@ -12,6 +13,42 @@ export default async function AdminDashboardPage() {
   return (
     <div className="flex flex-col gap-8">
       <h1 className="text-2xl font-extrabold tracking-tight">Overview</h1>
+
+      <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6">
+        <h2 className="mb-4 text-lg font-bold text-amber-900">
+          Needs action — {stats.pendingQueue.length} order
+          {stats.pendingQueue.length === 1 ? "" : "s"} awaiting confirmation
+        </h2>
+        {stats.pendingQueue.length === 0 ? (
+          <p className="text-sm text-amber-800/70">Nothing waiting on you right now.</p>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {stats.pendingQueue.map((order) => (
+              <div
+                key={order.id}
+                className="flex flex-col gap-3 rounded-xl border border-amber-200 bg-white p-4 sm:flex-row sm:items-start sm:justify-between"
+              >
+                <div className="text-sm">
+                  <Link
+                    href={`/admin/orders/${order.id}`}
+                    prefetch={false}
+                    className="font-bold hover:text-brand"
+                  >
+                    #{order.order_number}
+                  </Link>
+                  <p className="mt-1 font-semibold">{order.customer_name}</p>
+                  <p className="text-zinc-500">{order.customer_phone}</p>
+                  <p className="mt-1 text-zinc-500">
+                    {order.order_items.length} item{order.order_items.length === 1 ? "" : "s"} ·{" "}
+                    {formatPrice(order.total_amount)}
+                  </p>
+                </div>
+                <OrderConfirmCancel orderId={order.id} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <Stat label="Total sales" value={formatPrice(stats.totalRevenue)} />

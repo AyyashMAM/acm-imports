@@ -4,17 +4,9 @@ import { notFound } from "next/navigation";
 import { getCustomerById, getCustomerAddresses } from "@/lib/admin/customers-data";
 import { getOrdersByUserId } from "@/lib/admin/orders-data";
 import { formatPrice } from "@/lib/currency";
-import type { OrderStatus } from "@/lib/admin/types";
+import { STATUS_LABELS, STATUS_STYLES } from "@/lib/order-status";
 
 export const metadata: Metadata = { title: "Customer" };
-
-const STATUS_STYLES: Record<OrderStatus, string> = {
-  pending: "bg-amber-100 text-amber-700",
-  confirmed: "bg-blue-100 text-blue-700",
-  shipped: "bg-purple-100 text-purple-700",
-  delivered: "bg-green-100 text-green-700",
-  cancelled: "bg-zinc-200 text-zinc-600",
-};
 
 export default async function AdminCustomerDetailPage({
   params,
@@ -90,15 +82,15 @@ export default async function AdminCustomerDetailPage({
                         prefetch={false}
                         className="font-semibold hover:text-brand"
                       >
-                        {order.id.slice(0, 8)}
+                        {order.order_number}
                       </Link>
                     </td>
                     <td className="py-2">{formatPrice(order.total_amount)}</td>
                     <td className="py-2">
                       <span
-                        className={`rounded-full px-2.5 py-1 text-xs font-bold capitalize ${STATUS_STYLES[order.status]}`}
+                        className={`rounded-full px-2.5 py-1 text-xs font-bold ${STATUS_STYLES[order.status]}`}
                       >
-                        {order.status}
+                        {STATUS_LABELS[order.status]}
                       </span>
                     </td>
                     <td className="py-2 text-zinc-500">

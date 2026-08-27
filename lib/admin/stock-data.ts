@@ -9,6 +9,7 @@ export type StockRow = {
   variant: AdminProductVariant;
   effectiveThreshold: number;
   status: StockStatus;
+  reserved: number;
 };
 
 export type StockAdjustment = {
@@ -46,9 +47,34 @@ function statusFor(quantity: number, threshold: number): StockStatus {
   return "in_stock";
 }
 
+// Stock is already decremented the moment an order is placed (see
+// decrement_variant_stock), so stock_quantity is always safe to sell from —
+// this is purely informational: how much of it is tied up in orders that
+// haven't been confirmed yet, in case an admin wants to know what would come
+// back if they rejected one.
+async function getReservedQuantities(): Promise<Map<string, number>> {
+  const { data, error } = await supabaseAdmin
+    .from("order_items")
+    .select("product_variant_id, quantity, orders!inner ( status )")
+    .eq("orders.status", "pending");
+
+  if (error) throw error;
+
+  const reserved = new Map<string, number>();
+  for (const item of data ?? []) {
+    if (!item.product_variant_id) continue;
+    reserved.set(
+      item.product_variant_id,
+      (reserved.get(item.product_variant_id) ?? 0) + item.quantity
+    );
+  }
+  return reserved;
+}
+
 export async function getStockRows(): Promise<StockRow[]> {
-  const [defaultThreshold, { data: products, error }] = await Promise.all([
+  const [defaultThreshold, reserved, { data: products, error }] = await Promise.all([
     getDefaultLowStockThreshold(),
+    getReservedQuantities(),
     supabaseAdmin
       .from("products")
       .select(
@@ -69,6 +95,7 @@ export async function getStockRows(): Promise<StockRow[]> {
         variant,
         effectiveThreshold,
         status: statusFor(variant.stock_quantity, effectiveThreshold),
+        reserved: reserved.get(variant.id) ?? 0,
       });
     }
   }

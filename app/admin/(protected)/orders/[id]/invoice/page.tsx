@@ -4,6 +4,7 @@ import { getOrderById } from "@/lib/admin/orders-data";
 import { SITE_NAME } from "@/lib/seo";
 import { formatPrice } from "@/lib/currency";
 import { PrintButton } from "@/components/admin/print-button";
+import { STATUS_LABELS } from "@/lib/order-status";
 
 export const metadata: Metadata = { title: "Invoice" };
 
@@ -35,16 +36,16 @@ export default async function AdminOrderInvoicePage({
         </div>
         <div className="text-right">
           <p>
-            <span className="text-zinc-500">Order ID: </span>
-            {order.id}
+            <span className="text-zinc-500">Order #: </span>
+            {order.order_number}
           </p>
           <p>
             <span className="text-zinc-500">Date: </span>
             {new Date(order.created_at).toLocaleDateString()}
           </p>
-          <p className="capitalize">
+          <p>
             <span className="text-zinc-500">Status: </span>
-            {order.status}
+            {STATUS_LABELS[order.status]}
           </p>
         </div>
       </div>

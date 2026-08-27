@@ -2,19 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getMyOrderById } from "@/lib/account/orders-data";
 import { formatPrice } from "@/lib/currency";
-import type { OrderStatus } from "@/lib/admin/types";
+import { OrderStatusTimeline } from "@/components/order-status-timeline";
 
 export const metadata: Metadata = { title: "Order detail" };
-
-const STATUS_STYLES: Record<OrderStatus, string> = {
-  pending: "bg-amber-100 text-amber-700",
-  confirmed: "bg-blue-100 text-blue-700",
-  shipped: "bg-purple-100 text-purple-700",
-  delivered: "bg-green-100 text-green-700",
-  cancelled: "bg-zinc-200 text-zinc-600",
-};
-
-const STATUS_STEPS: OrderStatus[] = ["pending", "confirmed", "shipped", "delivered"];
 
 export default async function AccountOrderDetailPage({
   params,
@@ -23,13 +13,11 @@ export default async function AccountOrderDetailPage({
   const order = await getMyOrderById(id);
   if (!order) notFound();
 
-  const currentStep = STATUS_STEPS.indexOf(order.status);
-
   return (
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-extrabold tracking-tight">
-          Order #{order.id.slice(0, 8)}
+          Order #{order.order_number}
         </h1>
         <p className="text-sm text-zinc-500">
           Placed {new Date(order.created_at).toLocaleString()}
@@ -38,23 +26,15 @@ export default async function AccountOrderDetailPage({
 
       <section className="rounded-2xl border border-black/10 bg-white p-6">
         <h2 className="mb-4 text-lg font-bold">Status</h2>
-        {order.status === "cancelled" ? (
-          <span className={`rounded-full px-3 py-1.5 text-sm font-bold ${STATUS_STYLES.cancelled}`}>
-            Cancelled
-          </span>
-        ) : (
-          <ol className="flex flex-wrap gap-3">
-            {STATUS_STEPS.map((step, i) => (
-              <li
-                key={step}
-                className={`rounded-full px-3 py-1.5 text-sm font-bold capitalize ${
-                  i <= currentStep ? STATUS_STYLES[step] : "bg-zinc-100 text-zinc-400"
-                }`}
-              >
-                {step}
-              </li>
-            ))}
-          </ol>
+        <OrderStatusTimeline status={order.status} />
+        {order.status === "cancelled" && order.cancellation_reason && (
+          <p className="mt-3 text-sm text-zinc-500">Reason: {order.cancellation_reason}</p>
+        )}
+        {order.tracking_number && (
+          <p className="mt-3 text-sm text-zinc-600">
+            Courier: <strong>{order.courier_name ?? "—"}</strong> · Tracking:{" "}
+            <strong>{order.tracking_number}</strong>
+          </p>
         )}
       </section>
 

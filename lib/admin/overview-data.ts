@@ -2,11 +2,14 @@ import "server-only";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { COLOMBO_OFFSET_MS, startOfColomboDay } from "./reports-data";
 import { getStockRows, type StockRow } from "./stock-data";
+import { getOrders } from "./orders-data";
+import type { Order } from "./types";
 
 export type OverviewStats = {
   totalRevenue: number;
   totalOrders: number;
   pendingOrders: number;
+  pendingQueue: Order[];
   dailySales: { date: string; revenue: number }[];
   lowStock: StockRow[];
   outOfStock: StockRow[];
@@ -21,12 +24,13 @@ function colomboDateKey(iso: string): string {
 }
 
 export async function getOverviewStats(): Promise<OverviewStats> {
-  const [{ data: orders, error }, stockRows] = await Promise.all([
+  const [{ data: orders, error }, stockRows, pendingQueue] = await Promise.all([
     supabaseAdmin
       .from("orders")
       .select("total_amount, created_at, status")
       .neq("status", "cancelled"),
     getStockRows(),
+    getOrders("pending"),
   ]);
 
   if (error) throw error;
@@ -56,5 +60,5 @@ export async function getOverviewStats(): Promise<OverviewStats> {
   const lowStock = stockRows.filter((r) => r.status === "low");
   const outOfStock = stockRows.filter((r) => r.status === "out");
 
-  return { totalRevenue, totalOrders, pendingOrders, dailySales, lowStock, outOfStock };
+  return { totalRevenue, totalOrders, pendingOrders, pendingQueue, dailySales, lowStock, outOfStock };
 }
