@@ -227,7 +227,10 @@ enable_signup = true
 # addresses. If disabled, only the new email is required to confirm.
 double_confirm_changes = true
 # If enabled, users need to confirm their email address before signing in.
-enable_confirmations = true
+# Temporarily off: liora.lk isn't verified on Resend yet, so confirmation
+# emails can't reach real customers. Re-enable once that's sorted (see
+# admin_email under [auth.email.smtp] below).
+enable_confirmations = false
 # If enabled, users will need to reauthenticate or have logged in recently to change their password.
 secure_password_change = false
 # Controls the minimum amount of time that must pass before sending another signup confirmation or password reset email.
@@ -238,14 +241,20 @@ otp_length = 8
 otp_expiry = 3600
 
 # Use a production-ready SMTP server
-# [auth.email.smtp]
-# enabled = true
-# host = "smtp.sendgrid.net"
-# port = 587
-# user = "apikey"
-# pass = "env(SENDGRID_API_KEY)"
-# admin_email = "admin@email.com"
-# sender_name = "Admin"
+# Routes Auth emails (signup confirmation, password reset) through Resend
+# instead of Supabase's own low-rate-limit shared sender.
+# admin_email is temporarily onboarding@resend.dev (Resend's no-verification-
+# required sender) until liora.lk is verified as a sending domain on Resend —
+# switch it to orders@liora.lk once that's done. Until then, Resend only
+# delivers to the email the Resend account itself was created with.
+[auth.email.smtp]
+enabled = true
+host = "smtp.resend.com"
+port = 465
+user = "resend"
+pass = "env(RESEND_API_KEY)"
+admin_email = "onboarding@resend.dev"
+sender_name = "Liora"
 
 # Uncomment to customize email template
 # [auth.email.template.invite]
