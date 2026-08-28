@@ -24,6 +24,7 @@ export function AddToCart({ product }: { product: Product }) {
   }
 
   const outOfStock = variant.stock_quantity <= 0;
+  const lowStock = !outOfStock && variant.stock_quantity <= 5;
 
   const handleAdd = () => {
     addItem({
@@ -60,6 +61,12 @@ export function AddToCart({ product }: { product: Product }) {
       )}
 
       <p className="text-3xl font-extrabold text-brand">{formatPrice(variant.price)}</p>
+
+      {lowStock && (
+        <p className="text-sm font-semibold text-amber-600">
+          Only {variant.stock_quantity} left in stock
+        </p>
+      )}
 
       <div className="flex items-center gap-3">
         <label className="text-sm font-medium">Qty</label>

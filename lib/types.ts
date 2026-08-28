@@ -18,6 +18,10 @@ export type Product = {
   category: string | null;
   attributes: Record<string, string | boolean>;
   base_price: number;
+  brand: string | null;
+  benefits: string | null;
+  how_to_use: string | null;
+  ingredients: string | null;
   product_images: ProductImage[];
   product_variants: ProductVariant[];
 };

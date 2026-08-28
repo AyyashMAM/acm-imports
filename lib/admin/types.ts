@@ -7,6 +7,7 @@ export type AdminProductVariant = {
   id: string;
   label: string;
   sku: string | null;
+  barcode: string | null;
   price: number;
   cost_price: number | null;
   stock_quantity: number;
@@ -28,6 +29,10 @@ export type AdminProduct = {
   category: string | null;
   attributes: Record<string, string | boolean>;
   base_price: number;
+  brand: string | null;
+  benefits: string | null;
+  how_to_use: string | null;
+  ingredients: string | null;
   is_active: boolean;
   created_at: string;
   product_images: AdminProductImage[];

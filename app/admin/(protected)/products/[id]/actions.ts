@@ -13,6 +13,10 @@ export async function updateProduct(productId: string, formData: FormData) {
   const category = String(formData.get("category") ?? "").trim();
   const basePrice = Number(formData.get("base_price"));
   const isActive = formData.get("is_active") === "on";
+  const brand = String(formData.get("brand") ?? "").trim();
+  const benefits = String(formData.get("benefits") ?? "").trim();
+  const howToUse = String(formData.get("how_to_use") ?? "").trim();
+  const ingredients = String(formData.get("ingredients") ?? "").trim();
 
   if (!name || !isProductCategory(category) || Number.isNaN(basePrice) || basePrice < 0) {
     throw new Error("Invalid product details");
@@ -29,6 +33,10 @@ export async function updateProduct(productId: string, formData: FormData) {
       attributes,
       base_price: basePrice,
       is_active: isActive,
+      brand: brand || null,
+      benefits: benefits || null,
+      how_to_use: howToUse || null,
+      ingredients: ingredients || null,
     })
     .eq("id", productId);
 
@@ -47,6 +55,8 @@ export async function createVariant(productId: string, formData: FormData) {
   const stockQuantity = Number(formData.get("stock_quantity"));
   const thresholdRaw = formData.get("low_stock_threshold");
   const lowStockThreshold = thresholdRaw ? Number(thresholdRaw) : null;
+  const sku = String(formData.get("sku") ?? "").trim();
+  const barcode = String(formData.get("barcode") ?? "").trim();
 
   if (!label || Number.isNaN(price) || price < 0 || Number.isNaN(stockQuantity)) {
     throw new Error("Invalid variant details");
@@ -59,6 +69,8 @@ export async function createVariant(productId: string, formData: FormData) {
     cost_price: costPrice,
     stock_quantity: stockQuantity,
     low_stock_threshold: lowStockThreshold,
+    sku: sku || null,
+    barcode: barcode || null,
   });
 
   if (error) throw new Error("Could not create variant");
@@ -77,6 +89,8 @@ export async function updateVariant(variantId: string, formData: FormData) {
   const isActive = formData.get("is_active") === "on";
   const thresholdRaw = formData.get("low_stock_threshold");
   const lowStockThreshold = thresholdRaw ? Number(thresholdRaw) : null;
+  const sku = String(formData.get("sku") ?? "").trim();
+  const barcode = String(formData.get("barcode") ?? "").trim();
 
   if (!label || Number.isNaN(price) || price < 0 || Number.isNaN(stockQuantity)) {
     throw new Error("Invalid variant details");
@@ -91,6 +105,8 @@ export async function updateVariant(variantId: string, formData: FormData) {
       stock_quantity: stockQuantity,
       is_active: isActive,
       low_stock_threshold: lowStockThreshold,
+      sku: sku || null,
+      barcode: barcode || null,
     })
     .eq("id", variantId);
 

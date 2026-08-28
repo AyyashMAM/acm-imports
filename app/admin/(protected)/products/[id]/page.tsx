@@ -49,11 +49,50 @@ export default async function AdminProductEditPage({
             defaultAttributes={product.attributes}
           />
           <div>
+            <label className="mb-1 block text-sm font-medium">Brand</label>
+            <input
+              name="brand"
+              defaultValue={product.brand ?? ""}
+              placeholder="e.g. La Roche-Posay"
+              className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
             <label className="mb-1 block text-sm font-medium">Description</label>
             <textarea
               name="description"
               defaultValue={product.description ?? ""}
               rows={3}
+              className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium">Benefits</label>
+            <textarea
+              name="benefits"
+              defaultValue={product.benefits ?? ""}
+              rows={3}
+              placeholder={"One per line, e.g.\nRepairs damaged skin\nSoothes irritation"}
+              className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium">How to use</label>
+            <textarea
+              name="how_to_use"
+              defaultValue={product.how_to_use ?? ""}
+              rows={3}
+              placeholder={"One step per line, e.g.\nApply to clean skin\nMassage gently"}
+              className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium">Ingredients</label>
+            <textarea
+              name="ingredients"
+              defaultValue={product.ingredients ?? ""}
+              rows={3}
+              placeholder="Full ingredient list"
               className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
             />
           </div>
@@ -98,7 +137,7 @@ export default async function AdminProductEditPage({
             <form
               key={variant.id}
               action={updateVariant.bind(null, variant.id)}
-              className="grid grid-cols-2 gap-3 rounded-lg border border-black/10 p-4 sm:grid-cols-6 sm:items-end"
+              className="grid grid-cols-2 gap-3 rounded-lg border border-black/10 p-4 sm:grid-cols-4 sm:items-end"
             >
               <input type="hidden" name="product_id" value={product.id} />
               <div>
@@ -155,6 +194,22 @@ export default async function AdminProductEditPage({
                   className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
                 />
               </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium">SKU</label>
+                <input
+                  name="sku"
+                  defaultValue={variant.sku ?? ""}
+                  className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium">Barcode</label>
+                <input
+                  name="barcode"
+                  defaultValue={variant.barcode ?? ""}
+                  className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
+                />
+              </div>
               <div className="flex items-center justify-between gap-2">
                 <label className="flex items-center gap-1.5 text-xs font-medium">
                   <input
@@ -171,7 +226,7 @@ export default async function AdminProductEditPage({
                   Save
                 </button>
               </div>
-              <div className="col-span-2 sm:col-span-6">
+              <div className="col-span-2 sm:col-span-4">
                 <button
                   type="submit"
                   formAction={deleteVariant.bind(null, variant.id, product.id)}
@@ -186,7 +241,7 @@ export default async function AdminProductEditPage({
 
         <form
           action={createVariantWithId}
-          className="mt-6 grid grid-cols-2 gap-3 rounded-lg border border-dashed border-black/20 p-4 sm:grid-cols-6 sm:items-end"
+          className="mt-6 grid grid-cols-2 gap-3 rounded-lg border border-dashed border-black/20 p-4 sm:grid-cols-4 sm:items-end"
         >
           <div>
             <label className="mb-1 block text-xs font-medium">Label</label>
@@ -236,6 +291,20 @@ export default async function AdminProductEditPage({
               type="number"
               min="0"
               placeholder="Store default"
+              className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium">SKU</label>
+            <input
+              name="sku"
+              className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium">Barcode</label>
+            <input
+              name="barcode"
               className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
             />
           </div>
