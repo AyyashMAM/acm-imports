@@ -118,7 +118,7 @@ export default async function AdminProductEditPage({
           </label>
           <button
             type="submit"
-            className="mt-2 w-fit rounded-full bg-brand px-6 py-2.5 text-sm font-bold text-white hover:bg-brand-dark"
+            className="mt-2 w-fit rounded-full bg-brand px-6 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-dark hover:shadow-md active:scale-[0.98]"
           >
             Save details
           </button>
@@ -221,7 +221,7 @@ export default async function AdminProductEditPage({
                 </label>
                 <button
                   type="submit"
-                  className="rounded-full bg-zinc-900 px-3 py-1.5 text-xs font-bold text-white hover:bg-zinc-800"
+                  className="rounded-full bg-zinc-900 px-3 py-1.5 text-xs font-bold text-white shadow-sm transition-all hover:bg-zinc-800 hover:shadow-md active:scale-[0.98]"
                 >
                   Save
                 </button>
@@ -310,9 +310,12 @@ export default async function AdminProductEditPage({
           </div>
           <button
             type="submit"
-            className="rounded-full border border-black/15 px-3 py-1.5 text-xs font-bold hover:bg-black/[.04]"
+            className="flex items-center gap-1.5 rounded-full border border-black/15 px-3 py-1.5 text-xs font-bold transition-colors hover:border-brand hover:bg-brand-light/40 hover:text-brand-dark"
           >
-            + Add variant
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+            </svg>
+            Add variant
           </button>
         </form>
       </section>

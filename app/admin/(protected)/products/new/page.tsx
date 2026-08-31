@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { createProduct } from "../actions";
 import { CategoryAttributeFields } from "@/components/admin/category-attribute-fields";
+import { ProductImageInput } from "@/components/admin/product-image-input";
 
 export const metadata: Metadata = { title: "New product" };
 
@@ -8,7 +9,8 @@ export default function NewProductPage() {
   return (
     <div className="max-w-lg">
       <h1 className="mb-6 text-2xl font-extrabold tracking-tight">New product</h1>
-      <form action={createProduct} className="flex flex-col gap-4">
+      <form action={createProduct} className="flex flex-col gap-4 rounded-2xl border border-black/10 bg-white p-6">
+        <ProductImageInput />
         <div>
           <label className="mb-1 block text-sm font-medium">Name</label>
           <input
@@ -42,8 +44,11 @@ export default function NewProductPage() {
         </div>
         <button
           type="submit"
-          className="mt-2 rounded-full bg-brand px-6 py-3 text-sm font-bold text-white hover:bg-brand-dark"
+          className="mt-2 flex w-fit items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-dark hover:shadow-md active:scale-[0.98]"
         >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+          </svg>
           Create product
         </button>
       </form>

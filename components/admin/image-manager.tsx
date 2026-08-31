@@ -67,9 +67,14 @@ export function ImageManager({
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
         {sorted.map((image, index) => (
-          <div key={image.id} className="flex flex-col gap-1">
-            <div className="relative aspect-square overflow-hidden rounded-lg bg-zinc-100">
+          <div key={image.id} className="flex flex-col gap-1.5">
+            <div className="group relative aspect-square overflow-hidden rounded-lg bg-zinc-100 ring-1 ring-black/5">
               <Image src={image.url} alt="" fill className="object-cover" />
+              {index === 0 && (
+                <span className="absolute bottom-1 left-1 rounded-full bg-black/60 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                  Cover
+                </span>
+              )}
             </div>
             <div className="flex items-center justify-between text-xs">
               <div className="flex gap-1">
@@ -77,26 +82,41 @@ export function ImageManager({
                   type="button"
                   onClick={() => move(index, -1)}
                   disabled={index === 0 || isPending}
-                  className="rounded border border-black/10 px-1.5 py-0.5 disabled:opacity-30"
+                  aria-label="Move left"
+                  className="flex h-6 w-6 items-center justify-center rounded-md border border-black/10 text-zinc-600 transition-colors hover:bg-black/[.04] disabled:opacity-30"
                 >
-                  ←
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M7.5 2.5 3 6l4.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </button>
                 <button
                   type="button"
                   onClick={() => move(index, 1)}
                   disabled={index === sorted.length - 1 || isPending}
-                  className="rounded border border-black/10 px-1.5 py-0.5 disabled:opacity-30"
+                  aria-label="Move right"
+                  className="flex h-6 w-6 items-center justify-center rounded-md border border-black/10 text-zinc-600 transition-colors hover:bg-black/[.04] disabled:opacity-30"
                 >
-                  →
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M4.5 2.5 9 6l-4.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </button>
               </div>
               <button
                 type="button"
                 onClick={() => remove(image.id)}
                 disabled={isPending}
-                className="text-red-600 hover:underline"
+                aria-label="Delete image"
+                className="flex h-6 w-6 items-center justify-center rounded-md text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-30"
               >
-                Delete
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M3.5 4.5h9M6.5 4.5V3a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1.5M6.5 7.5v4M9.5 7.5v4M4.5 4.5l.6 8.1a1 1 0 0 0 1 .9h3.8a1 1 0 0 0 1-.9l.6-8.1"
+                    stroke="currentColor"
+                    strokeWidth="1.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               </button>
             </div>
           </div>
@@ -104,16 +124,32 @@ export function ImageManager({
       </div>
 
       <div>
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+          className="flex items-center gap-2 rounded-full border border-black/15 px-4 py-2 text-sm font-semibold text-zinc-700 transition-colors hover:border-brand hover:text-brand-dark disabled:opacity-50"
+        >
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="none">
+            <path
+              d="M4 13.5V15a1.5 1.5 0 0 0 1.5 1.5h9A1.5 1.5 0 0 0 16 15v-1.5M10 12.5V4M10 4 6.5 7.5M10 4l3.5 3.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          {uploading ? "Uploading..." : "Add image"}
+        </button>
         <input
           ref={fileInputRef}
           type="file"
           accept="image/*"
           onChange={handleUpload}
           disabled={uploading}
-          className="text-sm"
+          className="hidden"
         />
-        {uploading && <p className="mt-1 text-xs text-zinc-500">Uploading...</p>}
-        {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+        {error && <p className="mt-1.5 text-xs text-red-600">{error}</p>}
       </div>
     </div>
   );

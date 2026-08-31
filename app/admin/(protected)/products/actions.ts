@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { requireAdminUser } from "@/lib/admin/auth";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { isProductCategory, parseAttributesFromFormData } from "@/lib/category-fields";
+import { isUploadableImage, uploadProductImage } from "@/lib/admin/product-images";
 
 export async function createProduct(formData: FormData) {
   await requireAdminUser();
@@ -40,6 +41,9 @@ export async function createProduct(formData: FormData) {
     price: basePrice,
     stock_quantity: 0,
   });
+
+  const images = formData.getAll("images").filter(isUploadableImage);
+  await Promise.all(images.map((file, index) => uploadProductImage(product.id, file, index)));
 
   revalidatePath("/admin/products");
   redirect(`/admin/products/${product.id}`);
