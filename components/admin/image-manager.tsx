@@ -18,31 +18,39 @@ export function ImageManager({
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
 
   const sorted = [...images].sort((a, b) => a.sort_order - b.sort_order);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(e.target.files ?? []);
+    if (files.length === 0) return;
     setUploading(true);
     setError(null);
 
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const res = await fetch(`/api/admin/products/${productId}/images`, {
-      method: "POST",
-      body: formData,
-    });
+    let failed = false;
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch(`/api/admin/products/${productId}/images`, {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) failed = true;
+    }
 
     setUploading(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
 
-    if (!res.ok) {
-      setError("Upload failed. Try a smaller image file.");
-      return;
-    }
+    if (failed) setError("Some images failed to upload. Try a smaller image file.");
     router.refresh();
+  };
+
+  const reorderTo = (next: AdminProductImage[]) => {
+    startTransition(async () => {
+      await reorderProductImages(productId, next.map((img) => img.id));
+      router.refresh();
+    });
   };
 
   const move = (index: number, direction: -1 | 1) => {
@@ -50,10 +58,27 @@ export function ImageManager({
     const target = index + direction;
     if (target < 0 || target >= next.length) return;
     [next[index], next[target]] = [next[target], next[index]];
-    startTransition(async () => {
-      await reorderProductImages(productId, next.map((img) => img.id));
-      router.refresh();
-    });
+    reorderTo(next);
+  };
+
+  const makeCover = (index: number) => {
+    if (index === 0) return;
+    const next = [...sorted];
+    const [image] = next.splice(index, 1);
+    next.unshift(image);
+    reorderTo(next);
+  };
+
+  const handleDrop = (targetIndex: number) => {
+    if (dragIndex === null || dragIndex === targetIndex) {
+      setDragIndex(null);
+      return;
+    }
+    const next = [...sorted];
+    const [dragged] = next.splice(dragIndex, 1);
+    next.splice(targetIndex, 0, dragged);
+    setDragIndex(null);
+    reorderTo(next);
   };
 
   const remove = (imageId: string) => {
@@ -67,13 +92,35 @@ export function ImageManager({
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
         {sorted.map((image, index) => (
-          <div key={image.id} className="flex flex-col gap-1.5">
+          <div
+            key={image.id}
+            draggable
+            onDragStart={() => setDragIndex(index)}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              handleDrop(index);
+            }}
+            onDragEnd={() => setDragIndex(null)}
+            className={`flex cursor-grab flex-col gap-1.5 active:cursor-grabbing ${
+              dragIndex === index ? "opacity-40" : ""
+            }`}
+          >
             <div className="group relative aspect-square overflow-hidden rounded-lg bg-zinc-100 ring-1 ring-black/5">
-              <Image src={image.url} alt="" fill className="object-cover" />
-              {index === 0 && (
+              <Image src={image.url} alt="" fill className="object-cover" draggable={false} />
+              {index === 0 ? (
                 <span className="absolute bottom-1 left-1 rounded-full bg-black/60 px-1.5 py-0.5 text-[10px] font-bold text-white">
                   Cover
                 </span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => makeCover(index)}
+                  disabled={isPending}
+                  className="absolute bottom-1 left-1 rounded-full bg-black/60 px-1.5 py-0.5 text-[10px] font-bold text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-black/80 disabled:cursor-not-allowed"
+                >
+                  Set as cover
+                </button>
               )}
             </div>
             <div className="flex items-center justify-between text-xs">
@@ -145,10 +192,14 @@ export function ImageManager({
           ref={fileInputRef}
           type="file"
           accept="image/*"
+          multiple
           onChange={handleUpload}
           disabled={uploading}
           className="hidden"
         />
+        {sorted.length > 1 && (
+          <p className="mt-1.5 text-xs text-zinc-400">Drag a photo to reorder it.</p>
+        )}
         {error && <p className="mt-1.5 text-xs text-red-600">{error}</p>}
       </div>
     </div>

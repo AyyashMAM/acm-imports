@@ -12,8 +12,16 @@ export type AdminProductVariant = {
   cost_price: number | null;
   stock_quantity: number;
   low_stock_threshold: number | null;
+  expiry_date: string | null;
   is_active: boolean;
 };
+
+export const PRODUCT_STATUSES = ["draft", "published", "archived"] as const;
+export type ProductStatus = (typeof PRODUCT_STATUSES)[number];
+
+export function isProductStatus(value: unknown): value is ProductStatus {
+  return PRODUCT_STATUSES.includes(value as ProductStatus);
+}
 
 export type AdminProductImage = {
   id: string;
@@ -27,13 +35,19 @@ export type AdminProduct = {
   name: string;
   description: string | null;
   category: string | null;
-  attributes: Record<string, string | boolean>;
+  attributes: Record<string, string | boolean | string[]>;
   base_price: number;
   brand: string | null;
   benefits: string | null;
   how_to_use: string | null;
   ingredients: string | null;
   is_active: boolean;
+  sku: string | null;
+  status: ProductStatus;
+  is_on_sale: boolean;
+  sale_price: number | null;
+  cruelty_free: boolean;
+  vegan: boolean;
   created_at: string;
   product_images: AdminProductImage[];
   product_variants: AdminProductVariant[];

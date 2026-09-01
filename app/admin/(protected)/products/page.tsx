@@ -2,6 +2,22 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllProducts } from "@/lib/admin/products-data";
 import { DeleteProductButton } from "@/components/admin/delete-product-button";
+import { computeMargin } from "@/lib/currency";
+import type { AdminProduct } from "@/lib/admin/types";
+
+const STATUS_STYLES: Record<AdminProduct["status"], string> = {
+  published: "bg-green-100 text-green-700",
+  draft: "bg-amber-100 text-amber-700",
+  archived: "bg-zinc-200 text-zinc-600",
+};
+
+function averageMarginPercent(product: AdminProduct): number | null {
+  const margins = product.product_variants
+    .map((v) => computeMargin(v.price, v.cost_price))
+    .filter((m): m is NonNullable<typeof m> => m !== null);
+  if (margins.length === 0) return null;
+  return margins.reduce((sum, m) => sum + m.percent, 0) / margins.length;
+}
 
 export const metadata: Metadata = { title: "Products" };
 
@@ -32,6 +48,7 @@ export default async function AdminProductsPage() {
               <th className="px-4 py-3">Category</th>
               <th className="px-4 py-3">Variants</th>
               <th className="px-4 py-3">Total stock</th>
+              <th className="px-4 py-3">Margin</th>
               <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3 text-right">Actions</th>
             </tr>
@@ -42,6 +59,7 @@ export default async function AdminProductsPage() {
                 (sum, v) => sum + v.stock_quantity,
                 0
               );
+              const margin = averageMarginPercent(product);
               return (
                 <tr
                   key={product.id}
@@ -62,14 +80,17 @@ export default async function AdminProductsPage() {
                   <td className="px-4 py-3">{product.product_variants.length}</td>
                   <td className="px-4 py-3">{totalStock}</td>
                   <td className="px-4 py-3">
-                    <span
-                      className={`rounded-full px-2.5 py-1 text-xs font-bold ${
-                        product.is_active
-                          ? "bg-green-100 text-green-700"
-                          : "bg-zinc-200 text-zinc-600"
-                      }`}
-                    >
-                      {product.is_active ? "Active" : "Inactive"}
+                    {margin === null ? (
+                      <span className="text-zinc-400">—</span>
+                    ) : (
+                      <span className={`font-semibold ${margin < 0 ? "text-red-600" : "text-zinc-700"}`}>
+                        {margin.toFixed(1)}%
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${STATUS_STYLES[product.status]}`}>
+                      {product.status[0].toUpperCase() + product.status.slice(1)}
                     </span>
                   </td>
                   <td className="px-4 py-3">

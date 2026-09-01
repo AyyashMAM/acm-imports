@@ -5,6 +5,9 @@ import { ImageManager } from "@/components/admin/image-manager";
 import { CategoryAttributeFields } from "@/components/admin/category-attribute-fields";
 import { DeleteProductButton } from "@/components/admin/delete-product-button";
 import { SubmitButton } from "@/components/admin/submit-button";
+import { SalePriceField } from "@/components/admin/sale-price-field";
+import { VariantPriceFields } from "@/components/admin/variant-price-fields";
+import { PRODUCT_STATUSES } from "@/lib/admin/types";
 import {
   updateProduct,
   createVariant,
@@ -43,6 +46,15 @@ export default async function AdminProductEditPage({
               name="name"
               defaultValue={product.name}
               required
+              className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium">SKU</label>
+            <input
+              name="sku"
+              defaultValue={product.sku ?? ""}
+              placeholder="Product-level SKU"
               className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
             />
           </div>
@@ -110,14 +122,34 @@ export default async function AdminProductEditPage({
               className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
             />
           </div>
-          <label className="flex items-center gap-2 text-sm font-medium">
-            <input
-              type="checkbox"
-              name="is_active"
-              defaultChecked={product.is_active}
-            />
-            Visible in the storefront
-          </label>
+          <SalePriceField defaultIsOnSale={product.is_on_sale} defaultSalePrice={product.sale_price} />
+          <div className="flex gap-4">
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <input type="checkbox" name="cruelty_free" defaultChecked={product.cruelty_free} />
+              Cruelty-free
+            </label>
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <input type="checkbox" name="vegan" defaultChecked={product.vegan} />
+              Vegan
+            </label>
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium">Status</label>
+            <select
+              name="status"
+              defaultValue={product.status}
+              className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
+            >
+              {PRODUCT_STATUSES.map((s) => (
+                <option key={s} value={s}>
+                  {s[0].toUpperCase() + s.slice(1)}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-xs text-zinc-500">
+              Only Published products are visible in the storefront.
+            </p>
+          </div>
           <SubmitButton
             pendingText="Saving..."
             className="mt-2 w-fit rounded-full bg-brand px-6 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-dark hover:shadow-md active:scale-[0.98]"
@@ -151,29 +183,7 @@ export default async function AdminProductEditPage({
                   className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
                 />
               </div>
-              <div>
-                <label className="mb-1 block text-xs font-medium">Sell price (LKR)</label>
-                <input
-                  name="price"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  defaultValue={variant.price}
-                  required
-                  className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-xs font-medium">Cost price (LKR)</label>
-                <input
-                  name="cost_price"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  defaultValue={variant.cost_price ?? ""}
-                  className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
-                />
-              </div>
+              <VariantPriceFields defaultPrice={variant.price} defaultCostPrice={variant.cost_price} />
               <div>
                 <label className="mb-1 block text-xs font-medium">Stock</label>
                 <input
@@ -209,6 +219,15 @@ export default async function AdminProductEditPage({
                 <input
                   name="barcode"
                   defaultValue={variant.barcode ?? ""}
+                  className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium">Expiry / batch date</label>
+                <input
+                  name="expiry_date"
+                  type="date"
+                  defaultValue={variant.expiry_date ?? ""}
                   className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
                 />
               </div>
@@ -254,27 +273,7 @@ export default async function AdminProductEditPage({
               className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
             />
           </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium">Sell price</label>
-            <input
-              name="price"
-              type="number"
-              step="0.01"
-              min="0"
-              required
-              className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium">Cost price</label>
-            <input
-              name="cost_price"
-              type="number"
-              step="0.01"
-              min="0"
-              className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
-            />
-          </div>
+          <VariantPriceFields />
           <div>
             <label className="mb-1 block text-xs font-medium">Stock</label>
             <input
@@ -307,6 +306,14 @@ export default async function AdminProductEditPage({
             <label className="mb-1 block text-xs font-medium">Barcode</label>
             <input
               name="barcode"
+              className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium">Expiry / batch date</label>
+            <input
+              name="expiry_date"
+              type="date"
               className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
             />
           </div>

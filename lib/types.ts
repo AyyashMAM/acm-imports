@@ -16,7 +16,7 @@ export type Product = {
   name: string;
   description: string | null;
   category: string | null;
-  attributes: Record<string, string | boolean>;
+  attributes: Record<string, string | boolean | string[]>;
   base_price: number;
   brand: string | null;
   benefits: string | null;

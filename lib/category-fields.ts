@@ -14,7 +14,7 @@ export function isProductCategory(value: unknown): value is ProductCategory {
   return PRODUCT_CATEGORIES.includes(value as ProductCategory);
 }
 
-export type CategoryFieldType = "text" | "textarea" | "date" | "select" | "checkbox";
+export type CategoryFieldType = "text" | "textarea" | "date" | "select" | "checkbox" | "multiselect";
 
 export type CategoryField = {
   key: string;
@@ -27,10 +27,10 @@ export type CategoryField = {
 export const CATEGORY_FIELDS: Record<ProductCategory, CategoryField[]> = {
   Cosmetics: [
     {
-      key: "skin_type",
+      key: "skin_types",
       label: "Skin type",
-      type: "select",
-      options: ["All skin types", "Oily", "Dry", "Combination", "Sensitive"],
+      type: "multiselect",
+      options: ["Oily", "Dry", "Combination", "Normal", "All skin types"],
     },
     {
       key: "net_weight",
@@ -39,14 +39,12 @@ export const CATEGORY_FIELDS: Record<ProductCategory, CategoryField[]> = {
       placeholder: "e.g. 50ml, 100g",
     },
     { key: "shade", label: "Shade / colour", type: "text", placeholder: "e.g. Rose Pink" },
-    { key: "expiry_date", label: "Expiry date", type: "date" },
     { key: "ingredients", label: "Ingredients", type: "textarea" },
   ],
   Chocolate: [
     { key: "net_weight", label: "Net weight", type: "text", placeholder: "e.g. 100g" },
     { key: "flavor", label: "Flavor", type: "text", placeholder: "e.g. Hazelnut" },
     { key: "contains_nuts", label: "Contains nuts", type: "checkbox" },
-    { key: "expiry_date", label: "Expiry date", type: "date" },
     { key: "ingredients", label: "Ingredients", type: "textarea" },
   ],
   "Fancy Items": [
@@ -71,7 +69,7 @@ export const CATEGORY_FIELDS: Record<ProductCategory, CategoryField[]> = {
   ],
 };
 
-export type ProductAttributes = Record<string, string | boolean>;
+export type ProductAttributes = Record<string, string | boolean | string[]>;
 
 export function parseAttributesFromFormData(
   category: string,
@@ -81,11 +79,14 @@ export function parseAttributesFromFormData(
 
   const attributes: ProductAttributes = {};
   for (const field of CATEGORY_FIELDS[category]) {
-    const raw = formData.get(`attr_${field.key}`);
+    const name = `attr_${field.key}`;
     if (field.type === "checkbox") {
-      attributes[field.key] = raw === "on";
+      attributes[field.key] = formData.get(name) === "on";
+    } else if (field.type === "multiselect") {
+      const values = formData.getAll(name).map(String);
+      if (values.length > 0) attributes[field.key] = values;
     } else {
-      const value = String(raw ?? "").trim();
+      const value = String(formData.get(name) ?? "").trim();
       if (value) attributes[field.key] = value;
     }
   }

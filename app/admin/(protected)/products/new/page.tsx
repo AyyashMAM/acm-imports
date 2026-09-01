@@ -3,6 +3,7 @@ import { createProduct } from "../actions";
 import { CategoryAttributeFields } from "@/components/admin/category-attribute-fields";
 import { ProductImageInput } from "@/components/admin/product-image-input";
 import { SubmitButton } from "@/components/admin/submit-button";
+import { SalePriceField } from "@/components/admin/sale-price-field";
 
 export const metadata: Metadata = { title: "New product" };
 
@@ -17,6 +18,14 @@ export default function NewProductPage() {
           <input
             name="name"
             required
+            className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
+          />
+        </div>
+        <div>
+          <label className="mb-1 block text-sm font-medium">SKU</label>
+          <input
+            name="sku"
+            placeholder="Product-level SKU"
             className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
           />
         </div>
@@ -41,6 +50,32 @@ export default function NewProductPage() {
           />
           <p className="mt-1 text-xs text-zinc-500">
             Creates a default variant at this price — edit price, cost, and stock on the next screen.
+          </p>
+        </div>
+        <SalePriceField defaultIsOnSale={false} defaultSalePrice={null} />
+        <div className="flex gap-4">
+          <label className="flex items-center gap-2 text-sm font-medium">
+            <input type="checkbox" name="cruelty_free" />
+            Cruelty-free
+          </label>
+          <label className="flex items-center gap-2 text-sm font-medium">
+            <input type="checkbox" name="vegan" />
+            Vegan
+          </label>
+        </div>
+        <div>
+          <label className="mb-1 block text-sm font-medium">Status</label>
+          <select
+            name="status"
+            defaultValue="draft"
+            className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
+          >
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+            <option value="archived">Archived</option>
+          </select>
+          <p className="mt-1 text-xs text-zinc-500">
+            Starts as Draft so you can finish setting it up — switch to Published when it&apos;s ready to go live.
           </p>
         </div>
         <SubmitButton

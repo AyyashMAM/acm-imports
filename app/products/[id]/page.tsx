@@ -56,8 +56,10 @@ export default async function ProductDetailPage({
     ? CATEGORY_FIELDS[product.category]
         .map((field) => ({ label: field.label, value: product.attributes[field.key] }))
         .filter(
-          (spec): spec is { label: string; value: string | boolean } =>
-            spec.value !== undefined && spec.value !== ""
+          (spec): spec is { label: string; value: string | boolean | string[] } =>
+            spec.value !== undefined &&
+            spec.value !== "" &&
+            !(Array.isArray(spec.value) && spec.value.length === 0)
         )
     : [];
 
@@ -122,7 +124,13 @@ export default async function ProductDetailPage({
                 <div key={spec.label} className="contents">
                   <dt className="text-zinc-500">{spec.label}</dt>
                   <dd className="font-medium">
-                    {typeof spec.value === "boolean" ? (spec.value ? "Yes" : "No") : spec.value}
+                    {typeof spec.value === "boolean"
+                      ? spec.value
+                        ? "Yes"
+                        : "No"
+                      : Array.isArray(spec.value)
+                        ? spec.value.join(", ")
+                        : spec.value}
                   </dd>
                 </div>
               ))}

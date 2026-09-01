@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireAdminUser } from "@/lib/admin/auth";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { isProductCategory, parseAttributesFromFormData } from "@/lib/category-fields";
+import { isProductStatus } from "@/lib/admin/types";
 
 export async function updateProduct(productId: string, formData: FormData) {
   await requireAdminUser();
@@ -12,14 +13,24 @@ export async function updateProduct(productId: string, formData: FormData) {
   const description = String(formData.get("description") ?? "").trim();
   const category = String(formData.get("category") ?? "").trim();
   const basePrice = Number(formData.get("base_price"));
-  const isActive = formData.get("is_active") === "on";
   const brand = String(formData.get("brand") ?? "").trim();
   const benefits = String(formData.get("benefits") ?? "").trim();
   const howToUse = String(formData.get("how_to_use") ?? "").trim();
   const ingredients = String(formData.get("ingredients") ?? "").trim();
+  const sku = String(formData.get("sku") ?? "").trim();
+  const statusRaw = String(formData.get("status") ?? "draft");
+  const status = isProductStatus(statusRaw) ? statusRaw : "draft";
+  const isOnSale = formData.get("is_on_sale") === "on";
+  const salePriceRaw = formData.get("sale_price");
+  const salePrice = salePriceRaw ? Number(salePriceRaw) : null;
+  const crueltyFree = formData.get("cruelty_free") === "on";
+  const vegan = formData.get("vegan") === "on";
 
   if (!name || !isProductCategory(category) || Number.isNaN(basePrice) || basePrice < 0) {
     throw new Error("Invalid product details");
+  }
+  if (isOnSale && (salePrice === null || Number.isNaN(salePrice) || salePrice < 0)) {
+    throw new Error("A valid sale price is required when the discount is active");
   }
 
   const attributes = parseAttributesFromFormData(category, formData);
@@ -32,7 +43,13 @@ export async function updateProduct(productId: string, formData: FormData) {
       category,
       attributes,
       base_price: basePrice,
-      is_active: isActive,
+      sku: sku || null,
+      status,
+      is_active: status === "published",
+      is_on_sale: isOnSale,
+      sale_price: isOnSale ? salePrice : null,
+      cruelty_free: crueltyFree,
+      vegan,
       brand: brand || null,
       benefits: benefits || null,
       how_to_use: howToUse || null,
@@ -40,6 +57,7 @@ export async function updateProduct(productId: string, formData: FormData) {
     })
     .eq("id", productId);
 
+  if (error?.code === "23505") throw new Error("That SKU is already used by another product");
   if (error) throw new Error("Could not update product");
   revalidatePath(`/admin/products/${productId}`);
   revalidatePath("/admin/products");
@@ -57,6 +75,7 @@ export async function createVariant(productId: string, formData: FormData) {
   const lowStockThreshold = thresholdRaw ? Number(thresholdRaw) : null;
   const sku = String(formData.get("sku") ?? "").trim();
   const barcode = String(formData.get("barcode") ?? "").trim();
+  const expiryDate = String(formData.get("expiry_date") ?? "").trim();
 
   if (!label || Number.isNaN(price) || price < 0 || Number.isNaN(stockQuantity)) {
     throw new Error("Invalid variant details");
@@ -71,6 +90,7 @@ export async function createVariant(productId: string, formData: FormData) {
     low_stock_threshold: lowStockThreshold,
     sku: sku || null,
     barcode: barcode || null,
+    expiry_date: expiryDate || null,
   });
 
   if (error) throw new Error("Could not create variant");
@@ -91,6 +111,7 @@ export async function updateVariant(variantId: string, formData: FormData) {
   const lowStockThreshold = thresholdRaw ? Number(thresholdRaw) : null;
   const sku = String(formData.get("sku") ?? "").trim();
   const barcode = String(formData.get("barcode") ?? "").trim();
+  const expiryDate = String(formData.get("expiry_date") ?? "").trim();
 
   if (!label || Number.isNaN(price) || price < 0 || Number.isNaN(stockQuantity)) {
     throw new Error("Invalid variant details");
@@ -107,6 +128,7 @@ export async function updateVariant(variantId: string, formData: FormData) {
       low_stock_threshold: lowStockThreshold,
       sku: sku || null,
       barcode: barcode || null,
+      expiry_date: expiryDate || null,
     })
     .eq("id", variantId);
 

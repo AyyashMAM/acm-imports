@@ -6,6 +6,7 @@ import { requireAdminUser } from "@/lib/admin/auth";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { isProductCategory, parseAttributesFromFormData } from "@/lib/category-fields";
 import { isUploadableImage, uploadProductImage } from "@/lib/admin/product-images";
+import { isProductStatus } from "@/lib/admin/types";
 
 export async function createProduct(formData: FormData) {
   await requireAdminUser();
@@ -14,9 +15,20 @@ export async function createProduct(formData: FormData) {
   const description = String(formData.get("description") ?? "").trim();
   const category = String(formData.get("category") ?? "").trim();
   const basePrice = Number(formData.get("base_price"));
+  const sku = String(formData.get("sku") ?? "").trim();
+  const statusRaw = String(formData.get("status") ?? "draft");
+  const status = isProductStatus(statusRaw) ? statusRaw : "draft";
+  const isOnSale = formData.get("is_on_sale") === "on";
+  const salePriceRaw = formData.get("sale_price");
+  const salePrice = salePriceRaw ? Number(salePriceRaw) : null;
+  const crueltyFree = formData.get("cruelty_free") === "on";
+  const vegan = formData.get("vegan") === "on";
 
   if (!name || !isProductCategory(category) || Number.isNaN(basePrice) || basePrice < 0) {
     throw new Error("Invalid product details");
+  }
+  if (isOnSale && (salePrice === null || Number.isNaN(salePrice) || salePrice < 0)) {
+    throw new Error("A valid sale price is required when the discount is active");
   }
 
   const attributes = parseAttributesFromFormData(category, formData);
@@ -29,10 +41,18 @@ export async function createProduct(formData: FormData) {
       category,
       attributes,
       base_price: basePrice,
+      sku: sku || null,
+      status,
+      is_active: status === "published",
+      is_on_sale: isOnSale,
+      sale_price: isOnSale ? salePrice : null,
+      cruelty_free: crueltyFree,
+      vegan,
     })
     .select("id")
     .single();
 
+  if (error?.code === "23505") throw new Error("That SKU is already used by another product");
   if (error || !product) throw new Error("Could not create product");
 
   await supabaseAdmin.from("product_variants").insert({
