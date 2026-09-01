@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { createProduct } from "../actions";
 import { CategoryAttributeFields } from "@/components/admin/category-attribute-fields";
 import { ProductImageInput } from "@/components/admin/product-image-input";
+import { SubmitButton } from "@/components/admin/submit-button";
 
 export const metadata: Metadata = { title: "New product" };
 
@@ -42,15 +43,15 @@ export default function NewProductPage() {
             Creates a default variant at this price — edit price, cost, and stock on the next screen.
           </p>
         </div>
-        <button
-          type="submit"
+        <SubmitButton
+          pendingText="Creating..."
           className="mt-2 flex w-fit items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-dark hover:shadow-md active:scale-[0.98]"
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
           </svg>
           Create product
-        </button>
+        </SubmitButton>
       </form>
     </div>
   );

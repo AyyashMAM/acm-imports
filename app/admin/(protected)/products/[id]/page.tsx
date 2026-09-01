@@ -4,6 +4,7 @@ import { getAdminProductById } from "@/lib/admin/products-data";
 import { ImageManager } from "@/components/admin/image-manager";
 import { CategoryAttributeFields } from "@/components/admin/category-attribute-fields";
 import { DeleteProductButton } from "@/components/admin/delete-product-button";
+import { SubmitButton } from "@/components/admin/submit-button";
 import {
   updateProduct,
   createVariant,
@@ -117,12 +118,12 @@ export default async function AdminProductEditPage({
             />
             Visible in the storefront
           </label>
-          <button
-            type="submit"
+          <SubmitButton
+            pendingText="Saving..."
             className="mt-2 w-fit rounded-full bg-brand px-6 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-dark hover:shadow-md active:scale-[0.98]"
           >
             Save details
-          </button>
+          </SubmitButton>
         </form>
       </section>
 
@@ -220,12 +221,12 @@ export default async function AdminProductEditPage({
                   />
                   Active
                 </label>
-                <button
-                  type="submit"
+                <SubmitButton
+                  pendingText="Saving..."
                   className="rounded-full bg-zinc-900 px-3 py-1.5 text-xs font-bold text-white shadow-sm transition-all hover:bg-zinc-800 hover:shadow-md active:scale-[0.98]"
                 >
                   Save
-                </button>
+                </SubmitButton>
               </div>
               <div className="col-span-2 sm:col-span-4">
                 <button
@@ -309,15 +310,15 @@ export default async function AdminProductEditPage({
               className="w-full rounded-md border border-black/15 bg-transparent px-2 py-1.5 text-sm"
             />
           </div>
-          <button
-            type="submit"
+          <SubmitButton
+            pendingText="Adding..."
             className="flex items-center gap-1.5 rounded-full border border-black/15 px-3 py-1.5 text-xs font-bold transition-colors hover:border-brand hover:bg-brand-light/40 hover:text-brand-dark"
           >
             <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
               <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
             </svg>
             Add variant
-          </button>
+          </SubmitButton>
         </form>
       </section>
 
