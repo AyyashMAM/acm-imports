@@ -40,7 +40,7 @@ export default function NewProductPage() {
           />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium">Starting price (LKR)</label>
+          <label className="mb-1 block text-sm font-medium">Price (LKR)</label>
           <input
             name="base_price"
             type="number"
