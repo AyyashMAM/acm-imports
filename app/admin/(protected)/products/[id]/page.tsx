@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAdminProductById } from "@/lib/admin/products-data";
 import { ImageManager } from "@/components/admin/image-manager";
@@ -150,12 +151,21 @@ export default async function AdminProductEditPage({
               Only Published products are visible in the storefront.
             </p>
           </div>
-          <SubmitButton
-            pendingText="Saving..."
-            className="mt-2 w-fit rounded-full bg-brand px-6 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-dark hover:shadow-md active:scale-[0.98]"
-          >
-            Save details
-          </SubmitButton>
+          <div className="mt-2 flex items-center gap-3">
+            <SubmitButton
+              pendingText="Saving..."
+              className="w-fit rounded-full bg-brand px-6 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-dark hover:shadow-md active:scale-[0.98]"
+            >
+              Save details
+            </SubmitButton>
+            <Link
+              href="/admin/products"
+              prefetch={false}
+              className="rounded-full border border-black/15 px-6 py-2.5 text-sm font-bold text-zinc-600 transition-colors hover:bg-black/[.04] hover:text-zinc-900"
+            >
+              Cancel
+            </Link>
+          </div>
         </form>
       </section>
 
