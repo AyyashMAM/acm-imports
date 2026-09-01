@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getAdminProductById } from "@/lib/admin/products-data";
 import { ImageManager } from "@/components/admin/image-manager";
 import { CategoryAttributeFields } from "@/components/admin/category-attribute-fields";
+import { DeleteProductButton } from "@/components/admin/delete-product-button";
 import {
   updateProduct,
   createVariant,
@@ -318,6 +319,14 @@ export default async function AdminProductEditPage({
             Add variant
           </button>
         </form>
+      </section>
+
+      <section className="rounded-2xl border border-red-200 bg-red-50/40 p-6">
+        <h2 className="mb-1 text-lg font-bold text-red-900">Danger zone</h2>
+        <p className="mb-4 text-sm text-red-800/70">
+          Permanently delete this product, its variants, and its images. This can&apos;t be undone.
+        </p>
+        <DeleteProductButton productId={product.id} productName={product.name} variant="full" />
       </section>
     </div>
   );

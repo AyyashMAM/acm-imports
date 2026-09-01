@@ -48,3 +48,26 @@ export async function createProduct(formData: FormData) {
   revalidatePath("/admin/products");
   redirect(`/admin/products/${product.id}`);
 }
+
+export async function deleteProduct(productId: string) {
+  await requireAdminUser();
+
+  const { data: images } = await supabaseAdmin
+    .from("product_images")
+    .select("storage_path")
+    .eq("product_id", productId);
+
+  const paths = (images ?? [])
+    .map((img) => img.storage_path)
+    .filter((path): path is string => Boolean(path));
+
+  if (paths.length > 0) {
+    await supabaseAdmin.storage.from("product-images").remove(paths);
+  }
+
+  const { error } = await supabaseAdmin.from("products").delete().eq("id", productId);
+  if (error) throw new Error("Could not delete product");
+
+  revalidatePath("/admin/products");
+  redirect("/admin/products");
+}

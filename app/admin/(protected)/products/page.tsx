@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllProducts } from "@/lib/admin/products-data";
+import { DeleteProductButton } from "@/components/admin/delete-product-button";
 
 export const metadata: Metadata = { title: "Products" };
 
@@ -32,6 +33,7 @@ export default async function AdminProductsPage() {
               <th className="px-4 py-3">Variants</th>
               <th className="px-4 py-3">Total stock</th>
               <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -69,6 +71,27 @@ export default async function AdminProductsPage() {
                     >
                       {product.is_active ? "Active" : "Inactive"}
                     </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center justify-end gap-1">
+                      <Link
+                        href={`/admin/products/${product.id}`}
+                        prefetch={false}
+                        aria-label={`Edit ${product.name}`}
+                        className="flex h-7 w-7 items-center justify-center rounded-md text-zinc-500 transition-colors hover:bg-black/[.04] hover:text-zinc-900"
+                      >
+                        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                          <path
+                            d="M11.5 2.5 13.5 4.5 5 13H3v-2L11.5 2.5Z"
+                            stroke="currentColor"
+                            strokeWidth="1.4"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </Link>
+                      <DeleteProductButton productId={product.id} productName={product.name} />
+                    </div>
                   </td>
                 </tr>
               );
