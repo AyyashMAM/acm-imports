@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { createProduct } from "../actions";
 import { CategoryAttributeFields } from "@/components/admin/category-attribute-fields";
 import { ProductImageInput } from "@/components/admin/product-image-input";
@@ -78,15 +79,24 @@ export default function NewProductPage() {
             Starts as Draft so you can finish setting it up — switch to Published when it&apos;s ready to go live.
           </p>
         </div>
-        <SubmitButton
-          pendingText="Creating..."
-          className="mt-2 flex w-fit items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-dark hover:shadow-md active:scale-[0.98]"
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
-          </svg>
-          Create product
-        </SubmitButton>
+        <div className="mt-2 flex items-center gap-3">
+          <SubmitButton
+            pendingText="Creating..."
+            className="flex w-fit items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-dark hover:shadow-md active:scale-[0.98]"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+            </svg>
+            Create product
+          </SubmitButton>
+          <Link
+            href="/admin/products"
+            prefetch={false}
+            className="rounded-full border border-black/15 px-6 py-3 text-sm font-bold text-zinc-600 transition-colors hover:bg-black/[.04] hover:text-zinc-900"
+          >
+            Cancel
+          </Link>
+        </div>
       </form>
     </div>
   );
