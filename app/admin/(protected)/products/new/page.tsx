@@ -75,29 +75,36 @@ export default async function NewProductPage() {
           <div>
             <label className="mb-1 block text-sm font-medium">Weight</label>
             <div className="flex gap-2">
-              <input
-                name="weight_value"
-                type="number"
-                step="any"
-                min="0.001"
-                required
-                className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
-              />
-              <select
-                name="weight_unit"
-                defaultValue="g"
-                className="rounded-md border border-black/15 bg-transparent px-2 py-2 text-sm"
-              >
-                <option value="g">g</option>
-                <option value="kg">kg</option>
-              </select>
+              <div className="flex flex-1 items-center gap-1.5">
+                <input
+                  name="weight_kg_part"
+                  type="number"
+                  step="any"
+                  min="0"
+                  placeholder="0"
+                  className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
+                />
+                <span className="text-xs text-zinc-500">kg</span>
+              </div>
+              <div className="flex flex-1 items-center gap-1.5">
+                <input
+                  name="weight_g_part"
+                  type="number"
+                  step="any"
+                  min="0"
+                  max="999"
+                  placeholder="0"
+                  className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
+                />
+                <span className="text-xs text-zinc-500">g</span>
+              </div>
             </div>
           </div>
         </div>
         <p className="-mt-2 text-xs text-zinc-500">
           Creates a default variant at this price — edit price, cost, and stock on the next screen.
-          Weight sets the courier charge at checkout: Rs 425 for the first kg, +Rs 100 per
-          additional kg.
+          Weight (e.g. 2 kg 600 g) sets the courier charge at checkout: Rs 425 for the first kg,
+          +Rs 100 per additional kg.
         </p>
         <SalePriceField defaultIsOnSale={false} defaultSalePrice={null} />
         <div className="flex gap-4">

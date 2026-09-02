@@ -7,7 +7,7 @@ import { supabaseAdmin } from "@/lib/supabase/admin";
 import { isProductCategory, parseAttributesFromFormData } from "@/lib/category-fields";
 import { isUploadableImage, uploadProductImage } from "@/lib/admin/product-images";
 import { isProductStatus } from "@/lib/admin/types";
-import { isWeightUnit, toKg } from "@/lib/weight";
+import { toKg } from "@/lib/weight";
 
 export async function createProduct(formData: FormData) {
   await requireAdminUser();
@@ -16,10 +16,9 @@ export async function createProduct(formData: FormData) {
   const description = String(formData.get("description") ?? "").trim();
   const category = String(formData.get("category") ?? "").trim();
   const basePrice = Number(formData.get("base_price"));
-  const weightValue = Number(formData.get("weight_value"));
-  const weightUnitRaw = String(formData.get("weight_unit") ?? "kg");
-  const weightUnit = isWeightUnit(weightUnitRaw) ? weightUnitRaw : "kg";
-  const weightKg = toKg(weightValue, weightUnit);
+  const weightKgPart = Number(formData.get("weight_kg_part") || 0);
+  const weightGPart = Number(formData.get("weight_g_part") || 0);
+  const weightKg = toKg(weightKgPart, weightGPart);
   const brand = String(formData.get("brand") ?? "").trim();
   const sku = String(formData.get("sku") ?? "").trim();
   const statusRaw = String(formData.get("status") ?? "draft");
