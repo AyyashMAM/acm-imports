@@ -30,7 +30,7 @@ export function CheckoutForm({
   if (items.length === 0) {
     return (
       <div className="mx-auto max-w-3xl px-6 py-16 text-center">
-        <h1 className="mb-4 text-2xl font-semibold tracking-tight">
+        <h1 className="mb-4 font-display text-2xl font-semibold tracking-tight text-zinc-900">
           Your cart is empty
         </h1>
         <Link
@@ -54,7 +54,7 @@ export function CheckoutForm({
           <span className="rounded-full bg-brand/10 px-3 py-1 text-xs font-bold uppercase tracking-wide text-brand-dark">
             Almost there
           </span>
-          <h1 className="mt-3 text-3xl font-extrabold tracking-tight">Checkout</h1>
+          <h1 className="mt-3 font-display text-3xl font-semibold tracking-tight text-zinc-900">Checkout</h1>
           <p className="mt-1 text-sm text-zinc-500">
             Cash on delivery — pay when your order arrives at your door.
           </p>
@@ -62,7 +62,7 @@ export function CheckoutForm({
 
         <div className="grid gap-8 lg:grid-cols-[1.3fr_1fr] lg:items-start">
           <div className="rounded-2xl border border-black/10 bg-white p-6 sm:p-8">
-            <h2 className="mb-5 text-lg font-bold">Delivery details</h2>
+            <h2 className="mb-5 font-display text-lg font-semibold text-zinc-900">Delivery details</h2>
             <form action={formAction} className="flex flex-col gap-4">
               <input type="hidden" name="cart" value={cartPayload} />
 
@@ -143,13 +143,19 @@ export function CheckoutForm({
                 disabled={pending}
                 className="mt-2 w-full rounded-full bg-brand px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-brand/30 transition-transform hover:scale-[1.01] hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
               >
-                {pending ? "Placing order..." : `Place order · ${formatPrice(grandTotal)}`}
+                {pending ? (
+                  "Placing order..."
+                ) : (
+                  <>
+                    Place order · <span className="font-mono">{formatPrice(grandTotal)}</span>
+                  </>
+                )}
               </button>
             </form>
           </div>
 
           <div className="rounded-2xl border border-black/10 bg-white p-6 sm:p-8 lg:sticky lg:top-24">
-            <h2 className="mb-4 text-lg font-bold">Order summary</h2>
+            <h2 className="mb-4 font-display text-lg font-semibold text-zinc-900">Order summary</h2>
             <ul className="flex flex-col gap-4 text-sm">
               {items.map((item) => (
                 <li key={item.variantId} className="flex items-center gap-3">
@@ -165,7 +171,7 @@ export function CheckoutForm({
                     <p className="truncate font-medium">{item.productName}</p>
                     <p className="text-xs text-zinc-500">{item.variantLabel}</p>
                   </div>
-                  <span className="shrink-0 font-semibold">
+                  <span className="shrink-0 font-mono font-semibold">
                     {formatPrice(item.price * item.quantity)}
                   </span>
                 </li>
@@ -174,15 +180,15 @@ export function CheckoutForm({
             <div className="mt-5 flex flex-col gap-2 border-t border-black/10 pt-4 text-sm">
               <div className="flex justify-between text-zinc-600">
                 <span>Subtotal</span>
-                <span>{formatPrice(totalPrice)}</span>
+                <span className="font-mono">{formatPrice(totalPrice)}</span>
               </div>
               <div className="flex justify-between text-zinc-600">
                 <span>Shipping</span>
-                <span>{formatPrice(shippingFee)}</span>
+                <span className="font-mono">{formatPrice(shippingFee)}</span>
               </div>
               <div className="flex justify-between border-t border-black/10 pt-2 text-base font-bold">
                 <span>Total</span>
-                <span className="text-brand">{formatPrice(grandTotal)}</span>
+                <span className="font-mono text-brand">{formatPrice(grandTotal)}</span>
               </div>
             </div>
             <p className="mt-4 flex items-center gap-1.5 text-xs text-zinc-500">

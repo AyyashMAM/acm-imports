@@ -11,7 +11,7 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <div className="mx-auto max-w-3xl px-6 py-16 text-center">
-        <h1 className="mb-4 text-2xl font-semibold tracking-tight">
+        <h1 className="mb-4 font-display text-2xl font-semibold tracking-tight text-zinc-900">
           Your cart is empty
         </h1>
         <Link
@@ -26,7 +26,7 @@ export default function CartPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
-      <h1 className="mb-8 text-2xl font-semibold tracking-tight">Your Cart</h1>
+      <h1 className="mb-8 font-display text-2xl font-semibold tracking-tight text-zinc-900">Your Cart</h1>
       <ul className="flex flex-col gap-6">
         {items.map((item) => (
           <li key={item.variantId} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
@@ -44,7 +44,7 @@ export default function CartPage() {
               <div className="min-w-0 flex-1 sm:flex-none">
                 <p className="truncate font-medium">{item.productName}</p>
                 <p className="text-sm text-zinc-500">{item.variantLabel}</p>
-                <p className="text-sm font-semibold">{formatPrice(item.price)}</p>
+                <p className="font-mono text-sm font-semibold">{formatPrice(item.price)}</p>
               </div>
             </div>
             <div className="flex items-center justify-between gap-3 sm:ml-auto sm:justify-end">
@@ -74,14 +74,16 @@ export default function CartPage() {
       <div className="mt-10 flex flex-col gap-2 border-t border-black/10 pt-6 text-sm">
         <div className="flex justify-between text-zinc-600">
           <span>Subtotal</span>
-          <span>{formatPrice(totalPrice)}</span>
+          <span className="font-mono">{formatPrice(totalPrice)}</span>
         </div>
         <div className="flex justify-between text-zinc-600">
           <span>Shipping</span>
-          <span>{formatPrice(shippingFee)}</span>
+          <span className="font-mono">{formatPrice(shippingFee)}</span>
         </div>
         <div className="flex items-center justify-between pt-2 text-lg font-semibold">
-          <span>Total: {formatPrice(grandTotal)}</span>
+          <span>
+            Total: <span className="font-mono">{formatPrice(grandTotal)}</span>
+          </span>
           <Link
             href="/checkout"
             className="rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background transition-colors hover:bg-[#383838]"
