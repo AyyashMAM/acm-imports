@@ -71,7 +71,7 @@ export default async function ProductsPage({ searchParams }: PageProps<"/product
     <div>
       <div className="border-b border-black/10 bg-zinc-50">
         <div className="mx-auto max-w-5xl px-6 py-10 text-center">
-          <h1 className="text-3xl font-extrabold tracking-tight">
+          <h1 className="font-display text-4xl font-semibold tracking-tight text-zinc-900">
             {activeCategory ?? "Shop all"}
           </h1>
           <p className="mt-2 text-zinc-600">

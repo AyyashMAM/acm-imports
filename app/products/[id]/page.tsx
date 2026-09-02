@@ -110,7 +110,7 @@ export default async function ProductDetailPage({
           {product.brand && (
             <p className="text-sm font-semibold text-zinc-500">{product.brand}</p>
           )}
-          <h1 className="text-3xl font-extrabold tracking-tight">
+          <h1 className="font-display text-3xl font-semibold italic tracking-tight text-zinc-900">
             {product.name}
           </h1>
           {product.description && (

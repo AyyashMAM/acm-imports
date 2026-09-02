@@ -12,7 +12,7 @@ export function Footer() {
     <footer className="border-t border-black/10">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-6 py-10 text-center sm:flex-row sm:justify-between sm:text-left">
         <div>
-          <p className="text-lg font-extrabold tracking-tight">Liora</p>
+          <p className="font-display text-xl font-semibold italic tracking-tight">Liora</p>
           <p className="mt-1 text-sm text-zinc-500">
             Imported cosmetics, chocolates &amp; fancy finds, delivered to your door.
           </p>

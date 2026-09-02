@@ -61,7 +61,7 @@ export function AddToCart({ product }: { product: Product }) {
         </div>
       )}
 
-      <p className="text-3xl font-extrabold text-brand">{formatPrice(variant.price)}</p>
+      <p className="font-mono text-3xl font-semibold text-brand">{formatPrice(variant.price)}</p>
 
       {lowStock && (
         <p className="text-sm font-semibold text-amber-600">
