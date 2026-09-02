@@ -14,7 +14,7 @@ export default async function TrackOrderPage({
 
   return (
     <div className="mx-auto max-w-xl px-6 py-16">
-      <h1 className="mb-2 text-2xl font-extrabold tracking-tight">Track your order</h1>
+      <h1 className="mb-2 font-display text-2xl font-semibold tracking-tight text-zinc-900">Track your order</h1>
       <p className="mb-8 text-sm text-zinc-500">
         Enter your order number and the phone number you checked out with.
       </p>

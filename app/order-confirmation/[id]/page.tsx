@@ -30,7 +30,7 @@ export default async function OrderConfirmationPage({
   return (
     <div className="mx-auto max-w-2xl px-6 py-16 text-center">
       <ClearCartOnMount />
-      <h1 className="mb-2 text-2xl font-semibold tracking-tight">
+      <h1 className="mb-2 font-display text-2xl font-semibold tracking-tight text-zinc-900">
         Thank you, {order.customer_name}!
       </h1>
       <p className="mb-1 text-sm font-semibold text-zinc-500">
@@ -48,18 +48,18 @@ export default async function OrderConfirmationPage({
             <span>
               {item.product_name} ({item.variant_label}) x{item.quantity}
             </span>
-            <span>{formatPrice(item.subtotal)}</span>
+            <span className="font-mono">{formatPrice(item.subtotal)}</span>
           </li>
         ))}
       </ul>
       <div className="mb-10 flex flex-col gap-2 border-t border-black/10 pt-4 text-left text-sm">
         <div className="flex justify-between text-zinc-600">
           <span>Shipping</span>
-          <span>{formatPrice(order.shipping_fee)}</span>
+          <span className="font-mono">{formatPrice(order.shipping_fee)}</span>
         </div>
         <div className="flex justify-between text-base font-semibold">
           <span>Total (cash on delivery)</span>
-          <span>{formatPrice(order.total_amount)}</span>
+          <span className="font-mono">{formatPrice(order.total_amount)}</span>
         </div>
       </div>
 

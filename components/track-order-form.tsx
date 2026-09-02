@@ -47,7 +47,7 @@ export function TrackOrderForm({ initialOrderNumber }: { initialOrderNumber?: st
       {state && "order" in state && (
         <div className="flex flex-col gap-6">
           <section className="rounded-2xl border border-black/10 bg-white p-6">
-            <h2 className="mb-4 text-lg font-bold">
+            <h2 className="mb-4 font-display text-lg font-semibold text-zinc-900">
               Order #{state.order.order_number}
             </h2>
             <OrderStatusTimeline status={state.order.status} />
@@ -65,7 +65,7 @@ export function TrackOrderForm({ initialOrderNumber }: { initialOrderNumber?: st
           </section>
 
           <section className="rounded-2xl border border-black/10 bg-white p-6">
-            <h2 className="mb-4 text-lg font-bold">Items</h2>
+            <h2 className="mb-4 font-display text-lg font-semibold text-zinc-900">Items</h2>
             <ul className="flex flex-col gap-2 text-sm">
               {state.order.order_items.map((item) => (
                 <li key={item.id} className="flex justify-between">
@@ -73,18 +73,18 @@ export function TrackOrderForm({ initialOrderNumber }: { initialOrderNumber?: st
                     {item.product_name}
                     {item.variant_label ? ` (${item.variant_label})` : ""} x{item.quantity}
                   </span>
-                  <span>{formatPrice(item.subtotal)}</span>
+                  <span className="font-mono">{formatPrice(item.subtotal)}</span>
                 </li>
               ))}
             </ul>
             <div className="mt-4 flex flex-col gap-2 border-t border-black/10 pt-4 text-sm">
               <div className="flex justify-between text-zinc-500">
                 <span>Shipping</span>
-                <span>{formatPrice(state.order.shipping_fee)}</span>
+                <span className="font-mono">{formatPrice(state.order.shipping_fee)}</span>
               </div>
               <div className="flex justify-between text-base font-bold">
                 <span>Total (cash on delivery)</span>
-                <span>{formatPrice(state.order.total_amount)}</span>
+                <span className="font-mono">{formatPrice(state.order.total_amount)}</span>
               </div>
             </div>
           </section>
