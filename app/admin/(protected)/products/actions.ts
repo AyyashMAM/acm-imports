@@ -20,6 +20,7 @@ export async function createProduct(formData: FormData) {
   const weightUnitRaw = String(formData.get("weight_unit") ?? "kg");
   const weightUnit = isWeightUnit(weightUnitRaw) ? weightUnitRaw : "kg";
   const weightKg = toKg(weightValue, weightUnit);
+  const brand = String(formData.get("brand") ?? "").trim();
   const sku = String(formData.get("sku") ?? "").trim();
   const statusRaw = String(formData.get("status") ?? "draft");
   const status = isProductStatus(statusRaw) ? statusRaw : "draft";
@@ -50,6 +51,7 @@ export async function createProduct(formData: FormData) {
       attributes,
       base_price: basePrice,
       weight_kg: weightKg,
+      brand: brand || null,
       sku: sku || null,
       status,
       is_active: status === "published",

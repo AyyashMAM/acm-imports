@@ -32,6 +32,14 @@ export default function NewProductPage() {
         </div>
         <CategoryAttributeFields />
         <div>
+          <label className="mb-1 block text-sm font-medium">Brand</label>
+          <input
+            name="brand"
+            placeholder="e.g. La Roche-Posay"
+            className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
+          />
+        </div>
+        <div>
           <label className="mb-1 block text-sm font-medium">Description</label>
           <textarea
             name="description"
