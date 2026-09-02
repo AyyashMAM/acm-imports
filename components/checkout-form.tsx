@@ -15,7 +15,7 @@ export function CheckoutForm({
   profile: Profile | null;
   addresses: Address[];
 }) {
-  const { items, totalPrice } = useCart();
+  const { items, totalPrice, shippingFee, grandTotal } = useCart();
   const [state, formAction, pending] = useActionState(placeOrder, null);
 
   const defaultAddress = addresses.find((a) => a.is_default) ?? addresses[0] ?? null;
@@ -135,9 +135,19 @@ export function CheckoutForm({
             </li>
           ))}
         </ul>
-        <div className="mt-4 flex justify-between border-t border-black/10 pt-4 font-semibold">
-          <span>Total</span>
-          <span>{formatPrice(totalPrice)}</span>
+        <div className="mt-4 flex flex-col gap-2 border-t border-black/10 pt-4 text-sm">
+          <div className="flex justify-between text-zinc-600">
+            <span>Subtotal</span>
+            <span>{formatPrice(totalPrice)}</span>
+          </div>
+          <div className="flex justify-between text-zinc-600">
+            <span>Shipping</span>
+            <span>{formatPrice(shippingFee)}</span>
+          </div>
+          <div className="flex justify-between text-base font-semibold">
+            <span>Total</span>
+            <span>{formatPrice(grandTotal)}</span>
+          </div>
         </div>
       </div>
     </div>

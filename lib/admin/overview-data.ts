@@ -27,7 +27,7 @@ export async function getOverviewStats(): Promise<OverviewStats> {
   const [{ data: orders, error }, stockRows, pendingQueue] = await Promise.all([
     supabaseAdmin
       .from("orders")
-      .select("total_amount, created_at, status")
+      .select("total_amount, shipping_fee, created_at, status")
       .neq("status", "cancelled"),
     getStockRows(),
     getOrders("pending"),
@@ -36,7 +36,8 @@ export async function getOverviewStats(): Promise<OverviewStats> {
   if (error) throw error;
 
   const allOrders = orders ?? [];
-  const totalRevenue = allOrders.reduce((sum, o) => sum + o.total_amount, 0);
+  // Shipping is a pass-through courier charge, not merchandise revenue.
+  const totalRevenue = allOrders.reduce((sum, o) => sum + (o.total_amount - o.shipping_fee), 0);
   const totalOrders = allOrders.length;
   const pendingOrders = allOrders.filter((o) => o.status === "pending").length;
 
@@ -52,7 +53,7 @@ export async function getOverviewStats(): Promise<OverviewStats> {
     if (new Date(order.created_at) < windowStart) continue;
     const key = colomboDateKey(order.created_at);
     if (buckets.has(key)) {
-      buckets.set(key, (buckets.get(key) ?? 0) + order.total_amount);
+      buckets.set(key, (buckets.get(key) ?? 0) + (order.total_amount - order.shipping_fee));
     }
   }
   for (const [date, revenue] of buckets) dailySales.push({ date, revenue });

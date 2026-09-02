@@ -77,9 +77,15 @@ export function TrackOrderForm({ initialOrderNumber }: { initialOrderNumber?: st
                 </li>
               ))}
             </ul>
-            <div className="mt-4 flex justify-between border-t border-black/10 pt-4 font-bold">
-              <span>Total (cash on delivery)</span>
-              <span>{formatPrice(state.order.total_amount)}</span>
+            <div className="mt-4 flex flex-col gap-2 border-t border-black/10 pt-4 text-sm">
+              <div className="flex justify-between text-zinc-500">
+                <span>Shipping</span>
+                <span>{formatPrice(state.order.shipping_fee)}</span>
+              </div>
+              <div className="flex justify-between text-base font-bold">
+                <span>Total (cash on delivery)</span>
+                <span>{formatPrice(state.order.total_amount)}</span>
+              </div>
             </div>
           </section>
 

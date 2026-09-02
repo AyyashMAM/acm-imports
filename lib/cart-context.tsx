@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import type { CartItem } from "@/lib/types";
+import { calculateShippingFee } from "@/lib/shipping";
 
 const STORAGE_KEY = "liora-cart";
 
@@ -20,6 +21,9 @@ type CartContextValue = {
   clear: () => void;
   totalItems: number;
   totalPrice: number;
+  totalWeightKg: number;
+  shippingFee: number;
+  grandTotal: number;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -79,6 +83,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
     () => items.reduce((sum, i) => sum + i.quantity * i.price, 0),
     [items]
   );
+  // Weight of everything in the cart combined, priced as a single shipment
+  // (not per line item) — see lib/shipping.ts for the courier rate tiers.
+  const totalWeightKg = useMemo(
+    // weightKg may be missing on items persisted before this field existed;
+    // treat those as 0 rather than poisoning the whole sum with NaN.
+    () => items.reduce((sum, i) => sum + i.quantity * (i.weightKg || 0), 0),
+    [items]
+  );
+  const shippingFee = useMemo(
+    () => calculateShippingFee(totalWeightKg),
+    [totalWeightKg]
+  );
+  const grandTotal = totalPrice + shippingFee;
 
   return (
     <CartContext.Provider
@@ -90,6 +107,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clear,
         totalItems,
         totalPrice,
+        totalWeightKg,
+        shippingFee,
+        grandTotal,
       }}
     >
       {children}

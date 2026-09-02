@@ -3,7 +3,7 @@ import { isUuid } from "@/lib/uuid";
 import type { Product } from "@/lib/types";
 
 const PRODUCT_SELECT =
-  "id, name, description, category, attributes, base_price, brand, benefits, how_to_use, ingredients, product_images ( id, url, sort_order ), product_variants ( id, label, price, stock_quantity )";
+  "id, name, description, category, attributes, base_price, weight_kg, brand, benefits, how_to_use, ingredients, product_images ( id, url, sort_order ), product_variants ( id, label, price, stock_quantity )";
 
 export async function getActiveProducts(): Promise<Product[]> {
   const { data, error } = await supabase

@@ -51,7 +51,7 @@ export type SalesReport = {
 };
 
 const ORDER_SELECT =
-  "id, order_number, status, payment_method, user_id, customer_name, customer_phone, customer_email, delivery_address, city, notes, cancellation_reason, courier_name, tracking_number, total_amount, created_at, order_items ( id, product_variant_id, product_name, variant_label, unit_price, unit_cost, quantity, subtotal )";
+  "id, order_number, status, payment_method, user_id, customer_name, customer_phone, customer_email, delivery_address, city, notes, cancellation_reason, courier_name, tracking_number, shipping_fee, total_amount, created_at, order_items ( id, product_variant_id, product_name, variant_label, unit_price, unit_cost, quantity, subtotal )";
 
 export async function getSalesReport(range: ReportRange): Promise<SalesReport> {
   const start = rangeStart(range);
@@ -72,7 +72,9 @@ export async function getSalesReport(range: ReportRange): Promise<SalesReport> {
   let revenue = 0;
   let cost = 0;
   for (const order of orders) {
-    revenue += order.total_amount;
+    // Shipping is a pass-through courier charge, not merchandise revenue —
+    // excluded here so it doesn't inflate reported profit.
+    revenue += order.total_amount - order.shipping_fee;
     for (const item of order.order_items) {
       // Missing cost (older order or unpriced variant) is treated as 0,
       // per the decision to keep this simple rather than flag it in v1.

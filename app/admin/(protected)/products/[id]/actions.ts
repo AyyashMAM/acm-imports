@@ -13,6 +13,7 @@ export async function updateProduct(productId: string, formData: FormData) {
   const description = String(formData.get("description") ?? "").trim();
   const category = String(formData.get("category") ?? "").trim();
   const basePrice = Number(formData.get("base_price"));
+  const weightKg = Number(formData.get("weight_kg"));
   const brand = String(formData.get("brand") ?? "").trim();
   const benefits = String(formData.get("benefits") ?? "").trim();
   const howToUse = String(formData.get("how_to_use") ?? "").trim();
@@ -29,6 +30,9 @@ export async function updateProduct(productId: string, formData: FormData) {
   if (!name || !isProductCategory(category) || Number.isNaN(basePrice) || basePrice < 0) {
     throw new Error("Invalid product details");
   }
+  if (Number.isNaN(weightKg) || weightKg <= 0) {
+    throw new Error("Weight (kg) is required and must be greater than 0");
+  }
   if (isOnSale && (salePrice === null || Number.isNaN(salePrice) || salePrice < 0)) {
     throw new Error("A valid sale price is required when the discount is active");
   }
@@ -43,6 +47,7 @@ export async function updateProduct(productId: string, formData: FormData) {
       category,
       attributes,
       base_price: basePrice,
+      weight_kg: weightKg,
       sku: sku || null,
       status,
       is_active: status === "published",

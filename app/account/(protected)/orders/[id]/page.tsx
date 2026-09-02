@@ -65,8 +65,15 @@ export default async function AccountOrderDetailPage({
             </tbody>
           </table>
         </div>
-        <div className="mt-4 flex justify-end border-t border-black/10 pt-4 text-lg font-bold">
-          Total paid: {formatPrice(order.total_amount)}
+        <div className="mt-4 flex flex-col items-end gap-1 border-t border-black/10 pt-4 text-sm">
+          <div className="flex gap-4 text-zinc-500">
+            <span>Shipping</span>
+            <span className="w-28 text-right">{formatPrice(order.shipping_fee)}</span>
+          </div>
+          <div className="flex gap-4 text-lg font-bold">
+            <span>Total paid</span>
+            <span className="w-28 text-right">{formatPrice(order.total_amount)}</span>
+          </div>
         </div>
       </section>
 

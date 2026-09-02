@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { notifyOrderPlaced } from "@/lib/notifications";
+import { calculateShippingFee } from "@/lib/shipping";
 import type { Order } from "@/lib/admin/types";
 
 type CheckoutCartItem = {
@@ -50,7 +51,7 @@ export async function placeOrder(
   const variantIds = cart.map((i) => i.variantId);
   const { data: variants, error: variantsError } = await supabaseAdmin
     .from("product_variants")
-    .select("id, label, price, cost_price, stock_quantity, product_id, products ( name )")
+    .select("id, label, price, cost_price, stock_quantity, product_id, products ( name, weight_kg )")
     .in("id", variantIds);
 
   if (variantsError) {
@@ -59,7 +60,8 @@ export async function placeOrder(
 
   const variantMap = new Map((variants ?? []).map((v) => [v.id, v]));
 
-  let total = 0;
+  let itemsSubtotal = 0;
+  let totalWeightKg = 0;
   const orderItems: {
     product_variant_id: string;
     product_name: string;
@@ -81,7 +83,9 @@ export async function placeOrder(
       };
     }
     const subtotal = variant.price * cartItem.quantity;
-    total += subtotal;
+    itemsSubtotal += subtotal;
+    // @ts-expect-error -- joined relation typed loosely by supabase-js
+    totalWeightKg += (variant.products?.weight_kg ?? 0) * cartItem.quantity;
     orderItems.push({
       product_variant_id: variant.id,
       // @ts-expect-error -- joined relation typed loosely by supabase-js
@@ -94,6 +98,12 @@ export async function placeOrder(
     });
   }
 
+  // Server-computed from the combined weight of the order — never trust a
+  // client-sent shipping amount, since that would let checkout be tampered
+  // with to undercharge delivery.
+  const shippingFee = calculateShippingFee(totalWeightKg);
+  const total = itemsSubtotal + shippingFee;
+
   const { data: order, error: orderError } = await supabaseAdmin
     .from("orders")
     .insert({
@@ -105,6 +115,7 @@ export async function placeOrder(
       city,
       notes: notes || null,
       payment_method: "cod",
+      shipping_fee: shippingFee,
       total_amount: total,
     })
     .select("id, order_number")
@@ -162,6 +173,7 @@ export async function placeOrder(
     cancellation_reason: null,
     courier_name: null,
     tracking_number: null,
+    shipping_fee: shippingFee,
     total_amount: total,
     created_at: new Date().toISOString(),
     order_items: orderItems.map((item, i) => ({ id: String(i), ...item })),

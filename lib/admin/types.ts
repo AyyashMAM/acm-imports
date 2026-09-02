@@ -37,6 +37,7 @@ export type AdminProduct = {
   category: string | null;
   attributes: Record<string, string | boolean | string[]>;
   base_price: number;
+  weight_kg: number;
   brand: string | null;
   benefits: string | null;
   how_to_use: string | null;
@@ -79,6 +80,7 @@ export type Order = {
   cancellation_reason: string | null;
   courier_name: string | null;
   tracking_number: string | null;
+  shipping_fee: number;
   total_amount: number;
   created_at: string;
   order_items: OrderItem[];

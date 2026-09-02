@@ -33,6 +33,7 @@ export function AddToCart({ product }: { product: Product }) {
       productName: product.name,
       variantLabel: variant.label,
       price: variant.price,
+      weightKg: product.weight_kg,
       quantity,
       imageUrl: image?.url ?? null,
     });

@@ -6,7 +6,7 @@ import { useCart } from "@/lib/cart-context";
 import { formatPrice } from "@/lib/currency";
 
 export default function CartPage() {
-  const { items, updateQuantity, removeItem, totalPrice } = useCart();
+  const { items, updateQuantity, removeItem, totalPrice, shippingFee, grandTotal } = useCart();
 
   if (items.length === 0) {
     return (
@@ -71,14 +71,24 @@ export default function CartPage() {
         ))}
       </ul>
 
-      <div className="mt-10 flex items-center justify-between border-t border-black/10 pt-6">
-        <p className="text-lg font-semibold">Total: {formatPrice(totalPrice)}</p>
-        <Link
-          href="/checkout"
-          className="rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background transition-colors hover:bg-[#383838]"
-        >
-          Checkout
-        </Link>
+      <div className="mt-10 flex flex-col gap-2 border-t border-black/10 pt-6 text-sm">
+        <div className="flex justify-between text-zinc-600">
+          <span>Subtotal</span>
+          <span>{formatPrice(totalPrice)}</span>
+        </div>
+        <div className="flex justify-between text-zinc-600">
+          <span>Shipping</span>
+          <span>{formatPrice(shippingFee)}</span>
+        </div>
+        <div className="flex items-center justify-between pt-2 text-lg font-semibold">
+          <span>Total: {formatPrice(grandTotal)}</span>
+          <Link
+            href="/checkout"
+            className="rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background transition-colors hover:bg-[#383838]"
+          >
+            Checkout
+          </Link>
+        </div>
       </div>
     </div>
   );

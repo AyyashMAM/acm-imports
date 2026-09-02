@@ -20,7 +20,7 @@ export default async function OrderConfirmationPage({
   const { data: order } = await supabaseAdmin
     .from("orders")
     .select(
-      "id, order_number, customer_name, delivery_address, city, total_amount, created_at, order_items ( product_name, variant_label, quantity, unit_price, subtotal )"
+      "id, order_number, customer_name, delivery_address, city, shipping_fee, total_amount, created_at, order_items ( product_name, variant_label, quantity, unit_price, subtotal )"
     )
     .eq("id", id)
     .maybeSingle();
@@ -52,9 +52,15 @@ export default async function OrderConfirmationPage({
           </li>
         ))}
       </ul>
-      <div className="mb-10 flex justify-between border-t border-black/10 pt-4 font-semibold">
-        <span>Total (cash on delivery)</span>
-        <span>{formatPrice(order.total_amount)}</span>
+      <div className="mb-10 flex flex-col gap-2 border-t border-black/10 pt-4 text-left text-sm">
+        <div className="flex justify-between text-zinc-600">
+          <span>Shipping</span>
+          <span>{formatPrice(order.shipping_fee)}</span>
+        </div>
+        <div className="flex justify-between text-base font-semibold">
+          <span>Total (cash on delivery)</span>
+          <span>{formatPrice(order.total_amount)}</span>
+        </div>
       </div>
 
       <div className="flex flex-wrap justify-center gap-3">

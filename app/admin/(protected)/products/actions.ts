@@ -15,6 +15,7 @@ export async function createProduct(formData: FormData) {
   const description = String(formData.get("description") ?? "").trim();
   const category = String(formData.get("category") ?? "").trim();
   const basePrice = Number(formData.get("base_price"));
+  const weightKg = Number(formData.get("weight_kg"));
   const sku = String(formData.get("sku") ?? "").trim();
   const statusRaw = String(formData.get("status") ?? "draft");
   const status = isProductStatus(statusRaw) ? statusRaw : "draft";
@@ -26,6 +27,9 @@ export async function createProduct(formData: FormData) {
 
   if (!name || !isProductCategory(category) || Number.isNaN(basePrice) || basePrice < 0) {
     throw new Error("Invalid product details");
+  }
+  if (Number.isNaN(weightKg) || weightKg <= 0) {
+    throw new Error("Weight (kg) is required and must be greater than 0");
   }
   if (isOnSale && (salePrice === null || Number.isNaN(salePrice) || salePrice < 0)) {
     throw new Error("A valid sale price is required when the discount is active");
@@ -41,6 +45,7 @@ export async function createProduct(formData: FormData) {
       category,
       attributes,
       base_price: basePrice,
+      weight_kg: weightKg,
       sku: sku || null,
       status,
       is_active: status === "published",

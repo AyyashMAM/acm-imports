@@ -38,9 +38,13 @@ function itemsTable(order: Order): string {
   return `
     <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin: 12px 0;">
       ${rows}
-      <tr style="border-top: 1px solid #eee; font-weight: 700;">
-        <td style="padding: 10px 0 0;">Total (cash on delivery)</td>
-        <td style="padding: 10px 0 0; text-align: right;">${formatPrice(order.total_amount)}</td>
+      <tr style="border-top: 1px solid #eee;">
+        <td style="padding: 10px 0 0;">Shipping</td>
+        <td style="padding: 10px 0 0; text-align: right;">${formatPrice(order.shipping_fee)}</td>
+      </tr>
+      <tr style="font-weight: 700;">
+        <td style="padding: 6px 0 0;">Total (cash on delivery)</td>
+        <td style="padding: 6px 0 0; text-align: right;">${formatPrice(order.total_amount)}</td>
       </tr>
     </table>
   `;

@@ -18,6 +18,7 @@ export type Product = {
   category: string | null;
   attributes: Record<string, string | boolean | string[]>;
   base_price: number;
+  weight_kg: number;
   brand: string | null;
   benefits: string | null;
   how_to_use: string | null;
@@ -32,6 +33,7 @@ export type CartItem = {
   productName: string;
   variantLabel: string;
   price: number;
+  weightKg: number;
   quantity: number;
   imageUrl: string | null;
 };

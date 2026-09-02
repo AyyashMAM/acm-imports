@@ -4,7 +4,7 @@ import { isUuid } from "@/lib/uuid";
 import type { Order } from "@/lib/admin/types";
 
 const ORDER_SELECT =
-  "id, order_number, status, payment_method, user_id, customer_name, customer_phone, customer_email, delivery_address, city, notes, cancellation_reason, courier_name, tracking_number, total_amount, created_at, order_items ( id, product_variant_id, product_name, variant_label, unit_price, unit_cost, quantity, subtotal )";
+  "id, order_number, status, payment_method, user_id, customer_name, customer_phone, customer_email, delivery_address, city, notes, cancellation_reason, courier_name, tracking_number, shipping_fee, total_amount, created_at, order_items ( id, product_variant_id, product_name, variant_label, unit_price, unit_cost, quantity, subtotal )";
 
 // RLS-scoped: the "Users can read own orders"/"...order items" policies
 // (supabase/migrations/20260826000001_customer_accounts.sql) mean this
