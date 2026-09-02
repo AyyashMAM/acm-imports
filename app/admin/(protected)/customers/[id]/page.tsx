@@ -22,13 +22,13 @@ export default async function AdminCustomerDetailPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-extrabold tracking-tight">
+      <h1 className="font-display text-2xl font-semibold tracking-tight text-zinc-900">
         {customer.full_name || "Unnamed customer"}
       </h1>
 
       <div className="grid gap-6 sm:grid-cols-2">
         <section className="rounded-2xl border border-black/10 bg-white p-6">
-          <h2 className="mb-3 text-lg font-bold">Profile</h2>
+          <h2 className="mb-3 font-display text-lg font-semibold text-zinc-900">Profile</h2>
           <dl className="flex flex-col gap-2 text-sm">
             <Row label="Email" value={customer.email ?? "—"} />
             <Row label="Phone" value={customer.phone ?? "—"} />
@@ -39,7 +39,7 @@ export default async function AdminCustomerDetailPage({
         </section>
 
         <section className="rounded-2xl border border-black/10 bg-white p-6">
-          <h2 className="mb-3 text-lg font-bold">Saved addresses</h2>
+          <h2 className="mb-3 font-display text-lg font-semibold text-zinc-900">Saved addresses</h2>
           {addresses.length === 0 ? (
             <p className="text-sm text-zinc-500">No saved addresses.</p>
           ) : (
@@ -59,7 +59,7 @@ export default async function AdminCustomerDetailPage({
       </div>
 
       <section className="rounded-2xl border border-black/10 bg-white p-6">
-        <h2 className="mb-4 text-lg font-bold">Order history</h2>
+        <h2 className="mb-4 font-display text-lg font-semibold text-zinc-900">Order history</h2>
         {orders.length === 0 ? (
           <p className="text-sm text-zinc-500">No orders yet.</p>
         ) : (
@@ -80,12 +80,12 @@ export default async function AdminCustomerDetailPage({
                       <Link
                         href={`/admin/orders/${order.id}`}
                         prefetch={false}
-                        className="font-semibold hover:text-brand"
+                        className="font-mono font-semibold hover:text-brand"
                       >
                         {order.order_number}
                       </Link>
                     </td>
-                    <td className="py-2">{formatPrice(order.total_amount)}</td>
+                    <td className="py-2 font-mono">{formatPrice(order.total_amount)}</td>
                     <td className="py-2">
                       <span
                         className={`rounded-full px-2.5 py-1 text-xs font-bold ${STATUS_STYLES[order.status]}`}

@@ -19,7 +19,7 @@ export default async function AdminReportsPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-extrabold tracking-tight">Sales &amp; profit</h1>
+      <h1 className="font-display text-2xl font-semibold tracking-tight text-zinc-900">Sales &amp; profit</h1>
 
       <div className="flex flex-wrap gap-2">
         {REPORT_RANGES.map((r) => (
@@ -76,7 +76,7 @@ export default async function AdminReportsPage({
                   {new Date(order.created_at).toLocaleDateString()}
                 </td>
                 <td className="px-4 py-3">{STATUS_LABELS[order.status]}</td>
-                <td className="px-4 py-3">{formatPrice(order.total_amount)}</td>
+                <td className="px-4 py-3 font-mono">{formatPrice(order.total_amount)}</td>
               </tr>
             ))}
           </tbody>
@@ -105,7 +105,7 @@ function Stat({
       <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
         {label}
       </p>
-      <p className={`mt-1 text-2xl font-extrabold ${highlight ? "text-brand" : ""}`}>
+      <p className={`mt-1 font-mono text-2xl font-semibold ${highlight ? "text-brand" : ""}`}>
         {value}
       </p>
     </div>

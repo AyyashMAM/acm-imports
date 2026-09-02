@@ -20,7 +20,7 @@ export default async function AdminOrdersPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-extrabold tracking-tight">Orders</h1>
+      <h1 className="font-display text-2xl font-semibold tracking-tight text-zinc-900">Orders</h1>
 
       <div className="flex flex-wrap gap-2">
         <Link
@@ -68,7 +68,7 @@ export default async function AdminOrdersPage({
                   <Link
                     href={`/admin/orders/${order.id}`}
                     prefetch={false}
-                    className="font-semibold hover:text-brand"
+                    className="font-mono font-semibold hover:text-brand"
                   >
                     {order.order_number}
                   </Link>
@@ -86,7 +86,7 @@ export default async function AdminOrdersPage({
                   )}
                 </td>
                 <td className="px-4 py-3 text-zinc-500">{order.city}</td>
-                <td className="px-4 py-3">{formatPrice(order.total_amount)}</td>
+                <td className="px-4 py-3 font-mono">{formatPrice(order.total_amount)}</td>
                 <td className="px-4 py-3">
                   <span
                     className={`rounded-full px-2.5 py-1 text-xs font-bold ${STATUS_STYLES[order.status]}`}

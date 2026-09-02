@@ -14,7 +14,7 @@ export default async function NewProductPage() {
 
   return (
     <div className="max-w-lg">
-      <h1 className="mb-6 text-2xl font-extrabold tracking-tight">New product</h1>
+      <h1 className="mb-6 font-display text-2xl font-semibold tracking-tight text-zinc-900">New product</h1>
       <form action={createProduct} className="flex flex-col gap-4 rounded-2xl border border-black/10 bg-white p-6">
         <ProductImageInput />
         <div>

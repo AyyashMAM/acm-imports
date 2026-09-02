@@ -148,7 +148,7 @@ export function AdminSidebar({ signOutAction }: { signOutAction: () => void }) {
       {/* Mobile top bar */}
       <header className="sticky top-0 z-20 flex items-center justify-between border-b border-black/10 bg-white px-4 py-3 sm:hidden print:hidden">
         <span className="text-lg font-extrabold tracking-tight">
-          Liora <span className="text-zinc-400">Admin</span>
+          <span className="font-display italic">Liora</span> <span className="text-zinc-400">Admin</span>
         </span>
         <button
           type="button"
@@ -169,7 +169,7 @@ export function AdminSidebar({ signOutAction }: { signOutAction: () => void }) {
           <div className="absolute inset-y-0 left-0 flex w-64 flex-col gap-6 bg-white p-4 shadow-xl">
             <div className="flex items-center justify-between">
               <span className="text-lg font-extrabold tracking-tight">
-                Liora <span className="text-zinc-400">Admin</span>
+                <span className="font-display italic">Liora</span> <span className="text-zinc-400">Admin</span>
               </span>
               <button
                 type="button"
@@ -189,7 +189,7 @@ export function AdminSidebar({ signOutAction }: { signOutAction: () => void }) {
       {/* Desktop sidebar */}
       <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col gap-6 border-r border-black/10 bg-white p-4 sm:flex print:hidden">
         <span className="px-2 text-lg font-extrabold tracking-tight">
-          Liora <span className="text-zinc-400">Admin</span>
+          <span className="font-display italic">Liora</span> <span className="text-zinc-400">Admin</span>
         </span>
         <NavLinks pathname={pathname} />
         <LogoutButton signOutAction={signOutAction} />

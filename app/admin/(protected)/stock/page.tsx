@@ -33,7 +33,7 @@ export default async function AdminStockPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-extrabold tracking-tight">Stock</h1>
+        <h1 className="font-display text-2xl font-semibold tracking-tight text-zinc-900">Stock</h1>
         <form action={updateDefaultThreshold} className="flex items-center gap-2 text-sm">
           <label htmlFor="low_stock_threshold" className="font-medium text-zinc-500">
             Default low-stock threshold
@@ -80,7 +80,7 @@ export default async function AdminStockPage() {
                   </Link>
                 </td>
                 <td className="px-4 py-3 text-zinc-500">{row.variant.label}</td>
-                <td className="px-4 py-3 font-semibold">{row.variant.stock_quantity}</td>
+                <td className="px-4 py-3 font-mono font-semibold">{row.variant.stock_quantity}</td>
                 <td className="px-4 py-3 text-zinc-500">
                   {row.reserved > 0 ? (
                     <span title="Tied up in orders awaiting confirmation">
@@ -110,7 +110,7 @@ export default async function AdminStockPage() {
       </div>
 
       <div className="rounded-2xl border border-black/10 bg-white p-6">
-        <h2 className="mb-4 text-lg font-bold">Recent adjustments</h2>
+        <h2 className="mb-4 font-display text-lg font-semibold text-zinc-900">Recent adjustments</h2>
         {adjustments.length === 0 ? (
           <p className="text-sm text-zinc-500">No manual adjustments logged yet.</p>
         ) : (
@@ -130,7 +130,7 @@ export default async function AdminStockPage() {
                     <td className="py-2">
                       {a.product_name} — {a.variant_label}
                     </td>
-                    <td className={`py-2 font-semibold ${a.delta > 0 ? "text-green-600" : "text-red-600"}`}>
+                    <td className={`py-2 font-mono font-semibold ${a.delta > 0 ? "text-green-600" : "text-red-600"}`}>
                       {a.delta > 0 ? `+${a.delta}` : a.delta}
                     </td>
                     <td className="py-2 text-zinc-500">{a.reason}</td>

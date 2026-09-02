@@ -10,7 +10,7 @@ export default async function AdminCustomersPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-extrabold tracking-tight">Customers</h1>
+      <h1 className="font-display text-2xl font-semibold tracking-tight text-zinc-900">Customers</h1>
 
       <div className="overflow-x-auto rounded-2xl border border-black/10 bg-white">
         <table className="w-full min-w-[640px] text-left text-sm">
@@ -36,8 +36,8 @@ export default async function AdminCustomersPage() {
                   </Link>
                 </td>
                 <td className="px-4 py-3 text-zinc-500">{c.email ?? "—"}</td>
-                <td className="px-4 py-3">{c.order_count}</td>
-                <td className="px-4 py-3">{formatPrice(c.total_spent)}</td>
+                <td className="px-4 py-3 font-mono">{c.order_count}</td>
+                <td className="px-4 py-3 font-mono">{formatPrice(c.total_spent)}</td>
                 <td className="px-4 py-3 text-zinc-500">
                   {new Date(c.created_at).toLocaleDateString()}
                 </td>

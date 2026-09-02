@@ -27,7 +27,7 @@ export default async function AdminProductsPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-extrabold tracking-tight">Products</h1>
+        <h1 className="font-display text-2xl font-semibold tracking-tight text-zinc-900">Products</h1>
         <Link
           href="/admin/products/new"
           prefetch={false}
@@ -77,9 +77,9 @@ export default async function AdminProductsPage() {
                   <td className="px-4 py-3 text-zinc-500">
                     {product.category ?? "—"}
                   </td>
-                  <td className="px-4 py-3">{product.product_variants.length}</td>
-                  <td className="px-4 py-3">{totalStock}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 font-mono">{product.product_variants.length}</td>
+                  <td className="px-4 py-3 font-mono">{totalStock}</td>
+                  <td className="px-4 py-3 font-mono">
                     {margin === null ? (
                       <span className="text-zinc-400">—</span>
                     ) : (

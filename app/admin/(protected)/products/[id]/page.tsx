@@ -38,10 +38,10 @@ export default async function AdminProductEditPage({
 
   return (
     <div className="flex flex-col gap-8">
-      <h1 className="text-2xl font-extrabold tracking-tight">{product.name}</h1>
+      <h1 className="font-display text-2xl font-semibold tracking-tight text-zinc-900">{product.name}</h1>
 
       <section className="rounded-2xl border border-black/10 bg-white p-6">
-        <h2 className="mb-4 text-lg font-bold">Details</h2>
+        <h2 className="mb-4 font-display text-lg font-semibold text-zinc-900">Details</h2>
         <form action={updateProductWithId} className="flex flex-col gap-4">
           <div>
             <label className="mb-1 block text-sm font-medium">Name</label>
@@ -215,12 +215,12 @@ export default async function AdminProductEditPage({
       </section>
 
       <section className="rounded-2xl border border-black/10 bg-white p-6">
-        <h2 className="mb-4 text-lg font-bold">Images</h2>
+        <h2 className="mb-4 font-display text-lg font-semibold text-zinc-900">Images</h2>
         <ImageManager productId={product.id} images={product.product_images} />
       </section>
 
       <section className="rounded-2xl border border-black/10 bg-white p-6">
-        <h2 className="mb-4 text-lg font-bold">Variants</h2>
+        <h2 className="mb-4 font-display text-lg font-semibold text-zinc-900">Variants</h2>
         <div className="flex flex-col gap-4">
           {product.product_variants.map((variant) => (
             <form
@@ -385,7 +385,7 @@ export default async function AdminProductEditPage({
       </section>
 
       <section className="rounded-2xl border border-red-200 bg-red-50/40 p-6">
-        <h2 className="mb-1 text-lg font-bold text-red-900">Danger zone</h2>
+        <h2 className="mb-1 font-display text-lg font-semibold text-red-900">Danger zone</h2>
         <p className="mb-4 text-sm text-red-800/70">
           Permanently delete this product, its variants, and its images. This can&apos;t be undone.
         </p>

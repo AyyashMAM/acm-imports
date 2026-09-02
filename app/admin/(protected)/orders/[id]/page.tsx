@@ -27,7 +27,7 @@ export default async function AdminOrderDetailPage({
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight">
+          <h1 className="font-display text-2xl font-semibold tracking-tight text-zinc-900">
             Order #{order.order_number}
           </h1>
           <p className="text-sm text-zinc-500">{order.customer_name}</p>
@@ -43,7 +43,7 @@ export default async function AdminOrderDetailPage({
 
       <div className="grid gap-6 sm:grid-cols-2">
         <section className="rounded-2xl border border-black/10 bg-white p-6">
-          <h2 className="mb-3 text-lg font-bold">Customer</h2>
+          <h2 className="mb-3 font-display text-lg font-semibold text-zinc-900">Customer</h2>
           <dl className="flex flex-col gap-2 text-sm">
             <Row label="Name" value={order.customer_name} />
             <Row label="Phone" value={order.customer_phone} />
@@ -64,7 +64,7 @@ export default async function AdminOrderDetailPage({
         </section>
 
         <section className="rounded-2xl border border-black/10 bg-white p-6">
-          <h2 className="mb-3 text-lg font-bold">Status</h2>
+          <h2 className="mb-3 font-display text-lg font-semibold text-zinc-900">Status</h2>
 
           {order.status === "pending" ? (
             <OrderConfirmCancel orderId={order.id} />
@@ -124,7 +124,7 @@ export default async function AdminOrderDetailPage({
       </div>
 
       <section className="rounded-2xl border border-black/10 bg-white p-6">
-        <h2 className="mb-4 text-lg font-bold">Items</h2>
+        <h2 className="mb-4 font-display text-lg font-semibold text-zinc-900">Items</h2>
         <div className="overflow-x-auto">
         <table className="w-full min-w-[480px] text-left text-sm">
           <thead className="border-b border-black/10 text-xs font-semibold uppercase tracking-wide text-zinc-500">
@@ -143,8 +143,8 @@ export default async function AdminOrderDetailPage({
                   {item.variant_label ? ` (${item.variant_label})` : ""}
                 </td>
                 <td className="py-2">{item.quantity}</td>
-                <td className="py-2">{formatPrice(item.unit_price)}</td>
-                <td className="py-2">{formatPrice(item.subtotal)}</td>
+                <td className="py-2 font-mono">{formatPrice(item.unit_price)}</td>
+                <td className="py-2 font-mono">{formatPrice(item.subtotal)}</td>
               </tr>
             ))}
           </tbody>
@@ -153,11 +153,11 @@ export default async function AdminOrderDetailPage({
         <div className="mt-4 flex flex-col items-end gap-1 border-t border-black/10 pt-4 text-sm">
           <div className="flex gap-4 text-zinc-500">
             <span>Shipping</span>
-            <span className="w-28 text-right">{formatPrice(order.shipping_fee)}</span>
+            <span className="w-28 text-right font-mono">{formatPrice(order.shipping_fee)}</span>
           </div>
           <div className="flex gap-4 text-lg font-bold">
             <span>Total</span>
-            <span className="w-28 text-right">{formatPrice(order.total_amount)}</span>
+            <span className="w-28 text-right font-mono">{formatPrice(order.total_amount)}</span>
           </div>
         </div>
       </section>

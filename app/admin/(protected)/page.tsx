@@ -12,10 +12,10 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <h1 className="text-2xl font-extrabold tracking-tight">Overview</h1>
+      <h1 className="font-display text-2xl font-semibold tracking-tight text-zinc-900">Overview</h1>
 
       <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6">
-        <h2 className="mb-4 text-lg font-bold text-amber-900">
+        <h2 className="mb-4 font-display text-lg font-semibold text-amber-900">
           Needs action — {stats.pendingQueue.length} order
           {stats.pendingQueue.length === 1 ? "" : "s"} awaiting confirmation
         </h2>
@@ -40,7 +40,7 @@ export default async function AdminDashboardPage() {
                   <p className="text-zinc-500">{order.customer_phone}</p>
                   <p className="mt-1 text-zinc-500">
                     {order.order_items.length} item{order.order_items.length === 1 ? "" : "s"} ·{" "}
-                    {formatPrice(order.total_amount)}
+                    <span className="font-mono">{formatPrice(order.total_amount)}</span>
                   </p>
                 </div>
                 <OrderConfirmCancel orderId={order.id} />
@@ -65,13 +65,13 @@ export default async function AdminDashboardPage() {
       </div>
 
       <div className="rounded-2xl border border-black/10 bg-white p-6">
-        <h2 className="mb-4 text-lg font-bold">Sales — last 30 days</h2>
+        <h2 className="mb-4 font-display text-lg font-semibold text-zinc-900">Sales — last 30 days</h2>
         <SalesChart data={stats.dailySales} />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="rounded-2xl border border-black/10 bg-white p-6">
-          <h2 className="mb-4 text-lg font-bold">Out of stock</h2>
+          <h2 className="mb-4 font-display text-lg font-semibold text-zinc-900">Out of stock</h2>
           {stats.outOfStock.length === 0 ? (
             <p className="text-sm text-zinc-500">Nothing out of stock.</p>
           ) : (
@@ -93,7 +93,7 @@ export default async function AdminDashboardPage() {
         </div>
 
         <div className="rounded-2xl border border-black/10 bg-white p-6">
-          <h2 className="mb-4 text-lg font-bold">Low stock</h2>
+          <h2 className="mb-4 font-display text-lg font-semibold text-zinc-900">Low stock</h2>
           {stats.lowStock.length === 0 ? (
             <p className="text-sm text-zinc-500">Nothing low on stock.</p>
           ) : (
@@ -132,7 +132,7 @@ function Stat({
   return (
     <div className="rounded-2xl border border-black/10 bg-white p-5 transition-shadow hover:shadow-md">
       <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">{label}</p>
-      <p className={`mt-1 text-2xl font-extrabold ${highlight ? "text-brand" : ""}`}>{value}</p>
+      <p className={`mt-1 font-mono text-2xl font-semibold ${highlight ? "text-brand" : ""}`}>{value}</p>
     </div>
   );
 }
