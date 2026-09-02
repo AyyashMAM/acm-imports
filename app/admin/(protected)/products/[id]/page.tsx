@@ -9,6 +9,7 @@ import { SubmitButton } from "@/components/admin/submit-button";
 import { SalePriceField } from "@/components/admin/sale-price-field";
 import { VariantPriceFields } from "@/components/admin/variant-price-fields";
 import { PRODUCT_STATUSES } from "@/lib/admin/types";
+import { fromKg } from "@/lib/weight";
 import {
   updateProduct,
   createVariant,
@@ -31,6 +32,7 @@ export default async function AdminProductEditPage({
   const product = await getAdminProductById(id);
   if (!product) notFound();
 
+  const defaultWeight = fromKg(product.weight_kg);
   const updateProductWithId = updateProduct.bind(null, product.id);
   const createVariantWithId = createVariant.bind(null, product.id);
 
@@ -125,16 +127,26 @@ export default async function AdminProductEditPage({
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium">Weight (kg)</label>
-              <input
-                name="weight_kg"
-                type="number"
-                step="0.001"
-                min="0.001"
-                defaultValue={product.weight_kg}
-                required
-                className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
-              />
+              <label className="mb-1 block text-sm font-medium">Weight</label>
+              <div className="flex gap-2">
+                <input
+                  name="weight_value"
+                  type="number"
+                  step="any"
+                  min="0.001"
+                  defaultValue={defaultWeight.value}
+                  required
+                  className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
+                />
+                <select
+                  name="weight_unit"
+                  defaultValue={defaultWeight.unit}
+                  className="rounded-md border border-black/15 bg-transparent px-2 py-2 text-sm"
+                >
+                  <option value="g">g</option>
+                  <option value="kg">kg</option>
+                </select>
+              </div>
               <p className="mt-1 text-xs text-zinc-500">
                 Sets the courier charge: Rs 425 for the first kg, +Rs 100/kg after.
               </p>

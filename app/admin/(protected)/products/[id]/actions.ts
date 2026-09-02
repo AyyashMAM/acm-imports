@@ -5,6 +5,7 @@ import { requireAdminUser } from "@/lib/admin/auth";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { isProductCategory, parseAttributesFromFormData } from "@/lib/category-fields";
 import { isProductStatus } from "@/lib/admin/types";
+import { isWeightUnit, toKg } from "@/lib/weight";
 
 export async function updateProduct(productId: string, formData: FormData) {
   await requireAdminUser();
@@ -13,7 +14,10 @@ export async function updateProduct(productId: string, formData: FormData) {
   const description = String(formData.get("description") ?? "").trim();
   const category = String(formData.get("category") ?? "").trim();
   const basePrice = Number(formData.get("base_price"));
-  const weightKg = Number(formData.get("weight_kg"));
+  const weightValue = Number(formData.get("weight_value"));
+  const weightUnitRaw = String(formData.get("weight_unit") ?? "kg");
+  const weightUnit = isWeightUnit(weightUnitRaw) ? weightUnitRaw : "kg";
+  const weightKg = toKg(weightValue, weightUnit);
   const brand = String(formData.get("brand") ?? "").trim();
   const benefits = String(formData.get("benefits") ?? "").trim();
   const howToUse = String(formData.get("how_to_use") ?? "").trim();
@@ -31,7 +35,7 @@ export async function updateProduct(productId: string, formData: FormData) {
     throw new Error("Invalid product details");
   }
   if (Number.isNaN(weightKg) || weightKg <= 0) {
-    throw new Error("Weight (kg) is required and must be greater than 0");
+    throw new Error("Weight is required and must be greater than 0");
   }
   if (isOnSale && (salePrice === null || Number.isNaN(salePrice) || salePrice < 0)) {
     throw new Error("A valid sale price is required when the discount is active");

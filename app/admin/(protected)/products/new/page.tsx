@@ -52,15 +52,25 @@ export default function NewProductPage() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium">Weight (kg)</label>
-            <input
-              name="weight_kg"
-              type="number"
-              step="0.001"
-              min="0.001"
-              required
-              className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
-            />
+            <label className="mb-1 block text-sm font-medium">Weight</label>
+            <div className="flex gap-2">
+              <input
+                name="weight_value"
+                type="number"
+                step="any"
+                min="0.001"
+                required
+                className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
+              />
+              <select
+                name="weight_unit"
+                defaultValue="g"
+                className="rounded-md border border-black/15 bg-transparent px-2 py-2 text-sm"
+              >
+                <option value="g">g</option>
+                <option value="kg">kg</option>
+              </select>
+            </div>
           </div>
         </div>
         <p className="-mt-2 text-xs text-zinc-500">
