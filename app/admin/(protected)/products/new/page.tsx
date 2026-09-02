@@ -5,10 +5,13 @@ import { CategoryAttributeFields } from "@/components/admin/category-attribute-f
 import { ProductImageInput } from "@/components/admin/product-image-input";
 import { SubmitButton } from "@/components/admin/submit-button";
 import { SalePriceField } from "@/components/admin/sale-price-field";
+import { getDistinctBrands } from "@/lib/admin/products-data";
 
 export const metadata: Metadata = { title: "New product" };
 
-export default function NewProductPage() {
+export default async function NewProductPage() {
+  const brands = await getDistinctBrands();
+
   return (
     <div className="max-w-lg">
       <h1 className="mb-6 text-2xl font-extrabold tracking-tight">New product</h1>
@@ -35,9 +38,19 @@ export default function NewProductPage() {
           <label className="mb-1 block text-sm font-medium">Brand</label>
           <input
             name="brand"
+            list="brand-options"
             placeholder="e.g. La Roche-Posay"
+            autoComplete="off"
             className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
           />
+          <datalist id="brand-options">
+            {brands.map((b) => (
+              <option key={b} value={b} />
+            ))}
+          </datalist>
+          <p className="mt-1 text-xs text-zinc-500">
+            Pick an existing brand from the list, or type a new one.
+          </p>
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium">Description</label>

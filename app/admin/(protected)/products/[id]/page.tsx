@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getAdminProductById } from "@/lib/admin/products-data";
+import { getAdminProductById, getDistinctBrands } from "@/lib/admin/products-data";
 import { ImageManager } from "@/components/admin/image-manager";
 import { CategoryAttributeFields } from "@/components/admin/category-attribute-fields";
 import { DeleteProductButton } from "@/components/admin/delete-product-button";
@@ -29,7 +29,7 @@ export default async function AdminProductEditPage({
   params,
 }: PageProps<"/admin/products/[id]">) {
   const { id } = await params;
-  const product = await getAdminProductById(id);
+  const [product, brands] = await Promise.all([getAdminProductById(id), getDistinctBrands()]);
   if (!product) notFound();
 
   const defaultWeight = fromKg(product.weight_kg);
@@ -69,10 +69,20 @@ export default async function AdminProductEditPage({
             <label className="mb-1 block text-sm font-medium">Brand</label>
             <input
               name="brand"
+              list="brand-options"
               defaultValue={product.brand ?? ""}
               placeholder="e.g. La Roche-Posay"
+              autoComplete="off"
               className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm"
             />
+            <datalist id="brand-options">
+              {brands.map((b) => (
+                <option key={b} value={b} />
+              ))}
+            </datalist>
+            <p className="mt-1 text-xs text-zinc-500">
+              Pick an existing brand from the list, or type a new one.
+            </p>
           </div>
           <div>
             <label className="mb-1 block text-sm font-medium">Description</label>

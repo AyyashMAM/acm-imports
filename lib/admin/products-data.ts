@@ -30,3 +30,21 @@ export async function getAdminProductById(
   if (error) throw error;
   return data as unknown as AdminProduct | null;
 }
+
+// Feeds the brand <datalist> on the product form so admins can reuse an
+// existing brand name (avoiding near-duplicate spellings) or type a new one.
+export async function getDistinctBrands(): Promise<string[]> {
+  const { data, error } = await supabaseAdmin
+    .from("products")
+    .select("brand")
+    .not("brand", "is", null);
+
+  if (error) throw error;
+
+  const brands = new Set(
+    (data ?? [])
+      .map((row) => row.brand?.trim())
+      .filter((b): b is string => Boolean(b))
+  );
+  return Array.from(brands).sort((a, b) => a.localeCompare(b));
+}
