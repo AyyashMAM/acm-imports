@@ -151,7 +151,7 @@ export default async function AccountPage() {
       </div>
 
       <section className="rounded-2xl border border-black/10 bg-white p-6">
-        <h2 className="mb-4 text-lg font-bold">Order history</h2>
+        <h2 className="mb-4 font-display text-lg font-semibold text-zinc-900">Order history</h2>
         {orders.length === 0 ? (
           <p className="text-sm text-zinc-500">
             No orders yet.{" "}
@@ -182,7 +182,7 @@ export default async function AccountPage() {
                         #{order.order_number}
                       </Link>
                     </td>
-                    <td className="py-2">{formatPrice(order.total_amount)}</td>
+                    <td className="py-2 font-mono">{formatPrice(order.total_amount)}</td>
                     <td className="py-2">
                       <span
                         className={`rounded-full px-2.5 py-1 text-xs font-bold ${STATUS_STYLES[order.status]}`}
