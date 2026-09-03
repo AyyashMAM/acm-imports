@@ -1,15 +1,25 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { getActiveProducts } from "@/lib/products";
 import { getMyWishlistProductIds } from "@/lib/account/wishlist-data";
 import { ProductCard } from "@/components/product-card";
 import { BrandFilter } from "@/components/brand-filter";
+import type { Product } from "@/lib/types";
 
 export async function generateMetadata({
   searchParams,
 }: PageProps<"/products">): Promise<Metadata> {
-  const { category } = await searchParams;
+  const { category, q } = await searchParams;
   const c = Array.isArray(category) ? category[0] : category;
+  const query = Array.isArray(q) ? q[0] : q;
+
+  if (query) {
+    return {
+      title: `Search: ${query}`,
+      description: `Products matching "${query}" — imported cosmetics, chocolates & fancy finds.`,
+    };
+  }
 
   if (!c) {
     return {
@@ -28,14 +38,12 @@ export async function generateMetadata({
 }
 
 export default async function ProductsPage({ searchParams }: PageProps<"/products">) {
-  const { category, brand } = await searchParams;
+  const { category, brand, q } = await searchParams;
   const activeCategory = Array.isArray(category) ? category[0] : category;
   const activeBrand = Array.isArray(brand) ? brand[0] : brand;
+  const query = (Array.isArray(q) ? q[0] : q)?.trim() ?? "";
 
-  const [products, wishlistedIds] = await Promise.all([
-    getActiveProducts(),
-    getMyWishlistProductIds(),
-  ]);
+  const products = await getActiveProducts();
   const categories = Array.from(
     new Set(
       products
@@ -54,8 +62,22 @@ export default async function ProductsPage({ searchParams }: PageProps<"/product
   const filteredProducts = products.filter(
     (p) =>
       (!activeCategory || p.category === activeCategory) &&
-      (!activeBrand || p.brand === activeBrand)
+      (!activeBrand || p.brand === activeBrand) &&
+      matchesQuery(p, query)
   );
+
+  function matchesQuery(product: Product, q: string): boolean {
+    if (!q) return true;
+    const haystack = [product.name, product.brand, product.category, product.description]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+    return q
+      .toLowerCase()
+      .split(/\s+/)
+      .filter(Boolean)
+      .every((word) => haystack.includes(word));
+  }
 
   // Category links preserve whatever brand filter is active so the two can
   // be combined; the brand <select> (client-side) does the same in reverse.
@@ -63,6 +85,7 @@ export default async function ProductsPage({ searchParams }: PageProps<"/product
     const params = new URLSearchParams();
     if (c) params.set("category", c);
     if (activeBrand) params.set("brand", activeBrand);
+    if (query) params.set("q", query);
     const qs = params.toString();
     return qs ? `/products?${qs}` : "/products";
   }
@@ -72,7 +95,7 @@ export default async function ProductsPage({ searchParams }: PageProps<"/product
       <div className="border-b border-black/10 bg-zinc-50">
         <div className="mx-auto max-w-5xl px-6 py-10 text-center">
           <h1 className="font-display text-4xl font-semibold tracking-tight text-zinc-900">
-            {activeCategory ?? "Shop all"}
+            {query ? `Results for "${query}"` : (activeCategory ?? "Shop all")}
           </h1>
           <p className="mt-2 text-zinc-600">
             Cosmetics, chocolates &amp; fancy finds — imported, honest prices, cash on delivery.
@@ -122,26 +145,47 @@ export default async function ProductsPage({ searchParams }: PageProps<"/product
       <div className="mx-auto max-w-5xl px-6 py-12">
         {filteredProducts.length === 0 ? (
           <p className="text-zinc-500">
-            {activeCategory && activeBrand
-              ? `No ${activeBrand} ${activeCategory.toLowerCase()} products yet — check back soon.`
-              : activeCategory
-                ? `No ${activeCategory.toLowerCase()} products yet — check back soon.`
-                : activeBrand
-                  ? `No ${activeBrand} products yet — check back soon.`
-                  : "No products yet — check back soon."}
+            {query
+              ? `No products match "${query}"${activeCategory ? ` in ${activeCategory.toLowerCase()}` : ""}${activeBrand ? ` from ${activeBrand}` : ""}. Try a different keyword.`
+              : activeCategory && activeBrand
+                ? `No ${activeBrand} ${activeCategory.toLowerCase()} products yet — check back soon.`
+                : activeCategory
+                  ? `No ${activeCategory.toLowerCase()} products yet — check back soon.`
+                  : activeBrand
+                    ? `No ${activeBrand} products yet — check back soon.`
+                    : "No products yet — check back soon."}
           </p>
         ) : (
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3">
-            {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                isWishlisted={wishlistedIds.has(product.id)}
-              />
-            ))}
-          </div>
+          <Suspense fallback={<ProductGrid products={filteredProducts} wishlistedIds={new Set()} />}>
+            <WishlistedProductGrid products={filteredProducts} />
+          </Suspense>
         )}
       </div>
+    </div>
+  );
+}
+
+async function WishlistedProductGrid({ products }: { products: Product[] }) {
+  const wishlistedIds = await getMyWishlistProductIds();
+  return <ProductGrid products={products} wishlistedIds={wishlistedIds} />;
+}
+
+function ProductGrid({
+  products,
+  wishlistedIds,
+}: {
+  products: Product[];
+  wishlistedIds: Set<string>;
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-6 sm:grid-cols-3">
+      {products.map((product) => (
+        <ProductCard
+          key={product.id}
+          product={product}
+          isWishlisted={wishlistedIds.has(product.id)}
+        />
+      ))}
     </div>
   );
 }
