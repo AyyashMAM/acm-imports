@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getOrderById } from "@/lib/admin/orders-data";
 import { formatPrice } from "@/lib/currency";
 import { OrderConfirmCancel } from "@/components/admin/order-confirm-cancel";
+import { CancelOrderButton } from "@/components/admin/cancel-order-button";
 import { updateOrderStatus } from "./actions";
 
 export const metadata: Metadata = { title: "Order detail" };
@@ -119,6 +120,12 @@ export default async function AdminOrderDetailPage({
                 Update status
               </button>
             </form>
+          )}
+
+          {order.status !== "pending" && order.status !== "cancelled" && order.status !== "delivered" && (
+            <div className="mt-4 border-t border-black/10 pt-4">
+              <CancelOrderButton orderId={order.id} />
+            </div>
           )}
         </section>
       </div>
