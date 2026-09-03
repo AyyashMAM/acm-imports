@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { updateTag } from "next/cache";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { notifyOrderPlaced } from "@/lib/notifications";
@@ -157,6 +158,8 @@ export async function placeOrder(
         "Sorry, one of these items just sold out while you were checking out. Your order was not placed — please review your cart.",
     };
   }
+
+  updateTag("products");
 
   const fullOrder: Order = {
     id: order.id,

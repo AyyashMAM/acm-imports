@@ -27,6 +27,7 @@ export function ProductCard({
               src={image.url}
               alt={product.name}
               fill
+              sizes="(min-width: 640px) 33vw, 50vw"
               className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
           ) : (

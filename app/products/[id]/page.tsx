@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getProductById, getRelatedProducts } from "@/lib/products";
 import { AddToCart } from "@/components/add-to-cart";
@@ -42,10 +43,7 @@ export default async function ProductDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [product, wishlisted] = await Promise.all([
-    getProductById(id),
-    isProductWishlisted(id),
-  ]);
+  const product = await getProductById(id);
   if (!product) notFound();
 
   const images = [...product.product_images].sort(
@@ -140,7 +138,9 @@ export default async function ProductDetailPage({
             <div className="flex-1">
               <AddToCart product={product} />
             </div>
-            <WishlistButton productId={product.id} initialSaved={wishlisted} />
+            <Suspense fallback={<WishlistButton productId={product.id} initialSaved={false} />}>
+              <WishlistStatus productId={product.id} />
+            </Suspense>
           </div>
         </div>
       </div>
@@ -194,4 +194,9 @@ export default async function ProductDetailPage({
       )}
     </div>
   );
+}
+
+async function WishlistStatus({ productId }: { productId: string }) {
+  const wishlisted = await isProductWishlisted(productId);
+  return <WishlistButton productId={productId} initialSaved={wishlisted} />;
 }

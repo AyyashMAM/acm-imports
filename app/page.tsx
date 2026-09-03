@@ -79,7 +79,7 @@ export default async function Home() {
           </div>
 
           {heroProducts.length > 0 && (
-            <div className="relative hidden h-[380px] sm:block">
+            <div className="relative isolate hidden h-[380px] sm:block">
               {heroProducts.map((product, i) => {
                 const image = [...product.product_images].sort(
                   (a, b) => a.sort_order - b.sort_order

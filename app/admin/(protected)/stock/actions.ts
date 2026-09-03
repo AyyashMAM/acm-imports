@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { requireAdminUser } from "@/lib/admin/auth";
 import { adjustStock, setDefaultLowStockThreshold } from "@/lib/admin/stock-data";
 
@@ -32,6 +32,7 @@ export async function adjustStockAction(
   revalidatePath("/admin/stock");
   revalidatePath("/admin");
   revalidatePath("/admin/products");
+  updateTag("products");
   return { success: true };
 }
 

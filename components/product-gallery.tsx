@@ -22,6 +22,7 @@ export function ProductGallery({
             src={active.url}
             alt={productName}
             fill
+            sizes="(min-width: 640px) 50vw, 100vw"
             className="object-cover"
             priority
           />
@@ -44,7 +45,7 @@ export function ProductGallery({
                 img.id === active?.id ? "ring-brand" : "ring-transparent hover:ring-black/10"
               }`}
             >
-              <Image src={img.url} alt="" fill className="object-cover" />
+              <Image src={img.url} alt="" fill sizes="64px" className="object-cover" />
             </button>
           ))}
         </div>

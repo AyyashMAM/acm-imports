@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { requireAdminUser } from "@/lib/admin/auth";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { isProductCategory, parseAttributesFromFormData } from "@/lib/category-fields";
@@ -68,6 +68,8 @@ export async function updateProduct(productId: string, formData: FormData) {
   if (error?.code === "23505") throw new Error("That SKU is already used by another product");
   if (error) throw new Error("Could not update product");
   revalidatePath(`/admin/products/${productId}`);
+  updateTag(`product-${productId}`);
+  updateTag("products");
   revalidatePath("/admin/products");
 }
 
@@ -103,6 +105,8 @@ export async function createVariant(productId: string, formData: FormData) {
 
   if (error) throw new Error("Could not create variant");
   revalidatePath(`/admin/products/${productId}`);
+  updateTag(`product-${productId}`);
+  updateTag("products");
 }
 
 export async function updateVariant(variantId: string, formData: FormData) {
@@ -142,6 +146,8 @@ export async function updateVariant(variantId: string, formData: FormData) {
 
   if (error) throw new Error("Could not update variant");
   revalidatePath(`/admin/products/${productId}`);
+  updateTag(`product-${productId}`);
+  updateTag("products");
 }
 
 export async function deleteVariant(variantId: string, productId: string) {
@@ -154,6 +160,8 @@ export async function deleteVariant(variantId: string, productId: string) {
 
   if (error) throw new Error("Could not delete variant");
   revalidatePath(`/admin/products/${productId}`);
+  updateTag(`product-${productId}`);
+  updateTag("products");
 }
 
 export async function deleteProductImage(imageId: string, productId: string) {
@@ -176,6 +184,8 @@ export async function deleteProductImage(imageId: string, productId: string) {
 
   if (error) throw new Error("Could not delete image");
   revalidatePath(`/admin/products/${productId}`);
+  updateTag(`product-${productId}`);
+  updateTag("products");
 }
 
 export async function reorderProductImages(
@@ -194,4 +204,6 @@ export async function reorderProductImages(
   );
 
   revalidatePath(`/admin/products/${productId}`);
+  updateTag(`product-${productId}`);
+  updateTag("products");
 }

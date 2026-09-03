@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { requireAdminUser } from "@/lib/admin/auth";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { isProductCategory, parseAttributesFromFormData } from "@/lib/category-fields";
@@ -76,6 +76,7 @@ export async function createProduct(formData: FormData) {
   await Promise.all(images.map((file, index) => uploadProductImage(product.id, file, index)));
 
   revalidatePath("/admin/products");
+  updateTag("products");
   redirect(`/admin/products/${product.id}`);
 }
 
@@ -99,5 +100,6 @@ export async function deleteProduct(productId: string) {
   if (error) throw new Error("Could not delete product");
 
   revalidatePath("/admin/products");
+  updateTag("products");
   redirect("/admin/products");
 }
