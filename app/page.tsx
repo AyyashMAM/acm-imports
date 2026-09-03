@@ -45,7 +45,7 @@ export default async function Home() {
   return (
     <div>
       <section className="bg-white">
-        <div className="mx-auto grid max-w-6xl gap-12 px-6 py-20 sm:py-28 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+        <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 sm:gap-12 sm:py-20 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:py-28">
           <div>
             <span className="rounded-full bg-brand-light px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-brand-dark">
               Now shipping nationwide
@@ -79,7 +79,7 @@ export default async function Home() {
           </div>
 
           {heroProducts.length > 0 && (
-            <div className="relative isolate hidden h-[380px] sm:block">
+            <div className="relative isolate h-[260px] sm:h-[340px] lg:h-[380px]">
               {heroProducts.map((product, i) => {
                 const image = [...product.product_images].sort(
                   (a, b) => a.sort_order - b.sort_order
@@ -93,10 +93,11 @@ export default async function Home() {
                       src={image.url}
                       alt={product.name}
                       fill
+                      sizes="(min-width: 1024px) 30vw, (min-width: 640px) 40vw, 50vw"
                       className="object-cover"
                       priority={i === 0}
                     />
-                    <span className="absolute bottom-2 right-0 origin-bottom-right rotate-2 bg-white px-2 py-1 font-mono text-[10px] font-medium text-zinc-900 shadow-[-2px_2px_6px_rgba(0,0,0,.14)]">
+                    <span className="absolute bottom-1.5 right-0 origin-bottom-right rotate-2 bg-white px-1.5 py-0.5 font-mono text-[9px] font-medium text-zinc-900 shadow-[-2px_2px_6px_rgba(0,0,0,.14)] sm:bottom-2 sm:px-2 sm:py-1 sm:text-[10px]">
                       {formatPrice(minPrice(product))}
                     </span>
                   </div>
