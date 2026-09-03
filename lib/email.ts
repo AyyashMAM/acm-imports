@@ -54,6 +54,33 @@ function trackingUrl(order: Order): string {
   return new URL(`/track-order?order=${order.order_number}`, SITE_URL).toString();
 }
 
+function invoiceDetails(order: Order): string {
+  return `
+    <table style="width: 100%; font-size: 13px; color: #666; margin: 12px 0;">
+      <tr>
+        <td style="padding: 2px 0;">Invoice #</td>
+        <td style="padding: 2px 0; text-align: right; font-family: monospace;">${order.order_number}</td>
+      </tr>
+      <tr>
+        <td style="padding: 2px 0;">Date</td>
+        <td style="padding: 2px 0; text-align: right;">${new Date(order.created_at).toLocaleDateString()}</td>
+      </tr>
+      <tr>
+        <td style="padding: 2px 0; vertical-align: top;">Deliver to</td>
+        <td style="padding: 2px 0; text-align: right;">${order.customer_name}<br />${order.delivery_address}, ${order.city}</td>
+      </tr>
+    </table>
+  `;
+}
+
+function trackButton(order: Order): string {
+  return `
+    <p style="margin: 20px 0 0; text-align: center;">
+      <a href="${trackingUrl(order)}" style="display: inline-block; background: #ff5a1f; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 999px; font-size: 13px; font-weight: 700;">Track your order →</a>
+    </p>
+  `;
+}
+
 export async function sendOrderPlacedEmail(order: Order) {
   if (!resend || !order.customer_email) return;
 
@@ -74,10 +101,10 @@ export async function sendOrderConfirmedEmail(order: Order) {
   await resend.emails.send({
     from: FROM,
     to: order.customer_email,
-    subject: `Order confirmed — #${order.order_number}`,
+    subject: `Order confirmed — invoice #${order.order_number}`,
     html: layout(
       "Your order is confirmed",
-      `<p style="font-size: 14px; line-height: 1.5;">Good news — order <strong>#${order.order_number}</strong> is confirmed and being prepared for delivery.</p>${itemsTable(order)}`
+      `<p style="font-size: 14px; line-height: 1.5;">Good news — order <strong>#${order.order_number}</strong> is confirmed and being prepared for delivery. Here's your invoice for reference.</p>${invoiceDetails(order)}${itemsTable(order)}${trackButton(order)}`
     ),
   });
 }
