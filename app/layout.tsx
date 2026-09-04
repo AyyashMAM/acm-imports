@@ -64,14 +64,6 @@ export const metadata: Metadata = {
   },
 };
 
-const organizationJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: SITE_NAME,
-  url: SITE_URL.toString(),
-  description: SITE_DESCRIPTION,
-};
-
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
@@ -79,10 +71,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${fraunces.variable} ${workSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
-        />
         <CartProvider>
           <Header />
           <main className="flex-1">{children}</main>

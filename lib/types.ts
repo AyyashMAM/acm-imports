@@ -20,6 +20,7 @@ export type Product = {
   base_price: number;
   weight_kg: number;
   brand: string | null;
+  sku: string | null;
   benefits: string | null;
   how_to_use: string | null;
   ingredients: string | null;

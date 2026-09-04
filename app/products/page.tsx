@@ -6,22 +6,38 @@ import { getMyWishlistProductIds } from "@/lib/account/wishlist-data";
 import { ProductCard } from "@/components/product-card";
 import { BrandFilter } from "@/components/brand-filter";
 import type { Product } from "@/lib/types";
+import { CATEGORY_INTROS } from "@/lib/product-seo";
+import { isProductCategory } from "@/lib/category-fields";
 
 export async function generateMetadata({
   searchParams,
 }: PageProps<"/products">): Promise<Metadata> {
-  const { category, q } = await searchParams;
+  const { category, brand, q } = await searchParams;
   const c = Array.isArray(category) ? category[0] : category;
+  const b = Array.isArray(brand) ? brand[0] : brand;
   const query = Array.isArray(q) ? q[0] : q;
 
+  // A search query or a brand-only filter isn't a distinct page worth
+  // indexing on its own (thin/duplicate content risk) — still crawlable
+  // (follow) so links to real products keep flowing, just not indexed.
   if (query) {
     return {
       title: `Search: ${query}`,
       description: `Products matching "${query}" — imported cosmetics, chocolates & fancy finds.`,
+      robots: { index: false, follow: true },
+      alternates: { canonical: "/products" },
     };
   }
 
   if (!c) {
+    if (b) {
+      return {
+        title: `${b} products`,
+        description: `Shop ${b} products — imported picks at honest prices, cash on delivery available.`,
+        robots: { index: false, follow: true },
+        alternates: { canonical: "/products" },
+      };
+    }
     return {
       title: "Shop all products",
       description:
@@ -30,10 +46,20 @@ export async function generateMetadata({
     };
   }
 
+  const canonical = `/products?category=${encodeURIComponent(c)}`;
+  if (b) {
+    return {
+      title: `${b} ${c} products`,
+      description: `Shop ${b} ${c.toLowerCase()} — imported picks at honest prices, cash on delivery available.`,
+      robots: { index: false, follow: true },
+      alternates: { canonical },
+    };
+  }
+
   return {
     title: `${c} products`,
     description: `Shop ${c.toLowerCase()} — imported picks at honest prices, cash on delivery available.`,
-    alternates: { canonical: `/products?category=${encodeURIComponent(c)}` },
+    alternates: { canonical },
   };
 }
 
@@ -97,8 +123,12 @@ export default async function ProductsPage({ searchParams }: PageProps<"/product
           <h1 className="font-display text-4xl font-semibold tracking-tight text-zinc-900">
             {query ? `Results for "${query}"` : (activeCategory ?? "Shop all")}
           </h1>
-          <p className="mt-2 text-zinc-600">
-            Cosmetics, chocolates &amp; fancy finds — imported, honest prices, cash on delivery.
+          <p className="mx-auto mt-2 max-w-xl text-zinc-600">
+            {query
+              ? `Products matching "${query}" from our full catalog.`
+              : isProductCategory(activeCategory)
+                ? CATEGORY_INTROS[activeCategory]
+                : "Cosmetics, chocolates & fancy finds — imported, honest prices, cash on delivery."}
           </p>
         </div>
       </div>

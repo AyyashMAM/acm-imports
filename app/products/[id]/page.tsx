@@ -8,6 +8,7 @@ import { ProductGallery } from "@/components/product-gallery";
 import { ProductCard } from "@/components/product-card";
 import { isProductWishlisted } from "@/app/account/actions";
 import { CATEGORY_FIELDS, isProductCategory } from "@/lib/category-fields";
+import { buildProductTitle, buildMetaDescription, buildProductJsonLd, buildBreadcrumbJsonLd } from "@/lib/product-seo";
 
 export async function generateMetadata({
   params,
@@ -21,15 +22,18 @@ export async function generateMetadata({
   const image = [...product.product_images].sort(
     (a, b) => a.sort_order - b.sort_order
   )[0];
-  const description =
-    product.description ?? `Buy ${product.name} online. Cash on delivery available.`;
+  const title = buildProductTitle(product);
+  const description = buildMetaDescription(
+    product.description,
+    `Buy ${product.name} online. Cash on delivery available.`
+  );
 
   return {
-    title: product.name,
+    title,
     description,
     alternates: { canonical: `/products/${product.id}` },
     openGraph: {
-      title: product.name,
+      title,
       description,
       type: "website",
       images: image ? [{ url: image.url, alt: product.name }] : undefined,
@@ -72,29 +76,24 @@ export default async function ProductDetailPage({
 
   const relatedProducts = await getRelatedProducts(product.category, product.id);
 
-  const productJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    description: product.description ?? undefined,
-    category: product.category ?? undefined,
-    brand: product.brand ?? undefined,
-    image: images.map((img) => img.url),
-    offers: {
-      "@type": "Offer",
-      price: product.base_price,
-      priceCurrency: "LKR",
-      availability: product.product_variants.some((v) => v.stock_quantity > 0)
-        ? "https://schema.org/InStock"
-        : "https://schema.org/OutOfStock",
-    },
-  };
+  const productJsonLd = buildProductJsonLd(product, `/products/${product.id}`);
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    ...(product.category
+      ? [{ name: product.category, path: `/products?category=${encodeURIComponent(product.category)}` }]
+      : []),
+    { name: product.name, path: `/products/${product.id}` },
+  ]);
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-12">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <div className="grid gap-10 sm:grid-cols-2">
         <ProductGallery images={images} productName={product.name} />

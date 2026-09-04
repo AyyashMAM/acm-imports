@@ -5,6 +5,18 @@ import { formatPrice } from "@/lib/currency";
 import { PromoCarousel } from "@/components/promo-carousel";
 import { ProductCarousel } from "@/components/product-carousel";
 import type { Product } from "@/lib/types";
+import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/seo";
+
+// TODO: add "logo" (a proper square/brand-mark image, not the OG preview
+// image) and "contactPoint" (a public phone/email) once those exist —
+// Organization schema is far more useful to Google with both present.
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: SITE_NAME,
+  url: SITE_URL.toString(),
+  description: SITE_DESCRIPTION,
+};
 
 const FEATURES = [
   {
@@ -44,6 +56,10 @@ export default async function Home() {
 
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
       <section className="bg-white">
         <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 sm:gap-12 sm:py-20 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:py-28">
           <div>

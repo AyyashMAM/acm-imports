@@ -4,7 +4,7 @@ import { isUuid } from "@/lib/uuid";
 import type { Product } from "@/lib/types";
 
 const PRODUCT_SELECT =
-  "id, name, description, category, attributes, base_price, weight_kg, brand, benefits, how_to_use, ingredients, product_images ( id, url, sort_order ), product_variants ( id, label, price, stock_quantity )";
+  "id, name, description, category, attributes, base_price, weight_kg, brand, sku, benefits, how_to_use, ingredients, product_images ( id, url, sort_order ), product_variants ( id, label, price, stock_quantity )";
 
 // Cached for 5 minutes and invalidated immediately by updateTag("products")
 // whenever an admin edits a product, adjusts stock, or an order depletes it —
