@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllProducts } from "@/lib/admin/products-data";
 import { DeleteProductButton } from "@/components/admin/delete-product-button";
-import { computeMargin } from "@/lib/currency";
+import { computeMargin, formatPrice } from "@/lib/currency";
 import type { AdminProduct } from "@/lib/admin/types";
 
 const STATUS_STYLES: Record<AdminProduct["status"], string> = {
@@ -17,6 +17,26 @@ function averageMarginPercent(product: AdminProduct): number | null {
     .filter((m): m is NonNullable<typeof m> => m !== null);
   if (margins.length === 0) return null;
   return margins.reduce((sum, m) => sum + m.percent, 0) / margins.length;
+}
+
+// Variants can each carry their own price/cost, so a product-level row shows
+// a range when they differ (and a single value when they don't).
+function formatRange(values: number[]): string {
+  if (values.length === 0) return "—";
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  return min === max ? formatPrice(min) : `${formatPrice(min)} – ${formatPrice(max)}`;
+}
+
+function priceRange(product: AdminProduct): string {
+  return formatRange(product.product_variants.map((v) => v.price));
+}
+
+function costRange(product: AdminProduct): string {
+  const costs = product.product_variants
+    .map((v) => v.cost_price)
+    .filter((c): c is number => c !== null);
+  return formatRange(costs);
 }
 
 export const metadata: Metadata = { title: "Products" };
@@ -48,6 +68,8 @@ export default async function AdminProductsPage() {
               <th className="px-4 py-3">Category</th>
               <th className="px-4 py-3">Variants</th>
               <th className="px-4 py-3">Total stock</th>
+              <th className="px-4 py-3">Price</th>
+              <th className="px-4 py-3">Cost</th>
               <th className="px-4 py-3">Margin</th>
               <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3 text-right">Actions</th>
@@ -79,6 +101,8 @@ export default async function AdminProductsPage() {
                   </td>
                   <td className="px-4 py-3 font-mono">{product.product_variants.length}</td>
                   <td className="px-4 py-3 font-mono">{totalStock}</td>
+                  <td className="px-4 py-3 font-mono">{priceRange(product)}</td>
+                  <td className="px-4 py-3 font-mono text-zinc-500">{costRange(product)}</td>
                   <td className="px-4 py-3 font-mono">
                     {margin === null ? (
                       <span className="text-zinc-400">—</span>
